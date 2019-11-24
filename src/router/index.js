@@ -73,7 +73,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '仪表盘', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -100,39 +100,20 @@ export const constantRoutes = [
 export const asyncRoutes = [
 
   {
-    path: '/error',
+    path: '/system',
     component: Layout,
-    redirect: 'noRedirect',
-    name: 'ErrorPages',
-    meta: {
-      title: 'Error Pages',
-      icon: '404'
-    },
     children: [
       {
-        path: '401',
-        component: () => import('@/views/error-page/401'),
-        name: 'Page401',
-        meta: { title: '401', noCache: true }
+        path: 'role',
+        component: () => import('@/views/system/role/index'),
+        name: 'SystemRole',
+        meta: { title: '系统角色', icon: 'bug' }
       },
       {
-        path: '404',
-        component: () => import('@/views/error-page/404'),
-        name: 'Page404',
-        meta: { title: '404', noCache: true }
-      }
-    ]
-  },
-
-  {
-    path: '/error-log',
-    component: Layout,
-    children: [
-      {
-        path: 'log',
-        component: () => import('@/views/error-log/index'),
-        name: 'ErrorLog',
-        meta: { title: 'Error Log', icon: 'bug' }
+        path: 'user',
+        component: () => import('@/views/system/user/index'),
+        name: 'SystemUser',
+        meta: { title: '用户', icon: 'bug' }
       }
     ]
   },
