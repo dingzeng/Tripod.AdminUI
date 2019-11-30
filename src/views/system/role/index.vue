@@ -3,21 +3,17 @@
     <data-list 
       uri="/system/role"
       dialogTitle="角色"
+      dialogWidth="500px"
       :columns="columns" 
       :queryParams="params"
-      :paramsRules="paramsRules"
+      :modelRules="modelRules"
       :isPaging="false"
       :model.sync="model">
-      <template slot="query-form">
-        <el-form-item label="角色名称">
-          <el-input v-model="params.name" placeholder="角色名称" />
-        </el-form-item>
-      </template>
       <template>
-        <el-form-item label="角色名称">
+        <el-form-item prop="Name" label="角色名称">
           <el-input v-model="model.Name"></el-input>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item prop="Memo" label="备注">
           <el-input v-model="model.Memo"></el-input>
         </el-form-item>
       </template>
@@ -55,7 +51,11 @@ export default {
         }
       ],
       params: { },
-      paramsRules: [],
+      modelRules: {
+        Name: [
+          { required: true, message: '请输入角色名称', trigger: 'blur' }
+        ]
+      },
       model: {}
     }
   },

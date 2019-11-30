@@ -4,7 +4,7 @@
       <template slot="topLeft">
         <el-form :inline="true" :model="queryParams" class="demo-form-inline" size="small">
           <slot name="query-form"></slot>
-          <el-form-item>
+          <el-form-item v-if="$slots.queryForm">
             <el-button type="primary" icon="el-icon-search" @click="query">查询</el-button>
           </el-form-item>
         </el-form>
@@ -13,7 +13,7 @@
         <el-button type="primary" icon="el-icon-plus" size="small" plain @click="handleAdd">新增</el-button>
       </template>
       <template>
-        <el-table :data="data" style="width: 100%">
+        <el-table :data="data" style="width: 100%" stripe highlight-current-row>
           <template v-for="col in columns">
             <el-table-column v-if="col.type=='_opt'" label="操作" width="150" :key="col.prop">
               <template slot-scope="scope">
@@ -43,13 +43,32 @@
       :fullscreen="dialogFullscreen"
       :modal-append-to-body="false"
       :close-on-click-modal="false"
-      :before-close="dialogCloseBefore">
-      <el-form :model="innerModel">
+      :before-close="closeDialog"
+      @closed="dialogClosed">
+      <el-form 
+        ref="modelForm"
+        :model="innerModel" 
+        :rules="modelRules" 
+        label-width="100px" 
+        size="small">
         <slot></slot>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="doSave">确 定</el-button>
+        <el-button @click="closeDialog" size="small">取 消</el-button>
+        <el-button type="primary" @click="doSave" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog 
+      title="提示"
+      width="300px"
+      :show-close="false"
+      :visible.sync="confirmDialogVisible"
+      :close-on-click-modal="false">
+      <p>你想要保存更改吗？</p>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="confirmDialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="confirmDialogVisible = false;dialogVisible = false" size="small">不保存</el-button>
+        <el-button type="primary" @click="confirmDialogVisible = false;doSave()" size="small">保 存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -72,8 +91,10 @@ export default {
       limit: 20,
       total: 0,
       dialogVisible: false,
+      confirmDialogVisible: false,
       innerModel: this.model,
-      action: ''  // add | view | edit
+      action: '',  // add | view | edit
+      modelChanged: false
     }
   },
   props: {
@@ -100,8 +121,12 @@ export default {
       default: () => {}
     },
     paramsRules: {
-      type: Array,
-      default: () => []
+      type: Object,
+      default: () => {}
+    },
+    modelRules: {
+      type: Object,
+      default: () => {}
     },
     isPaging: {
       type: Boolean,
@@ -148,17 +173,23 @@ export default {
       this.dialogVisible = true
       this.initFn().then(response => {
         this.innerModel = Object.assign({}, this.model, response.data)
+        this.$nextTick(() => {
+          this.modelChanged = false
+        })
       })
     },
     handleEdit(index, row) {
       this.action = 'edit'
       this.dialogVisible = true
       this.getFn(row[this.pk]).then(response => {
-        if(response.code != 20000){
+        if(response.code != 20000) {
           this.$message.error(response.message)
           return
         }
         this.innerModel = response.data
+        this.$nextTick(() => {
+          this.modelChanged = false
+        })
       })
     },
     handleDelete(index, row) {
@@ -173,38 +204,53 @@ export default {
         })
       })
     },
-    dialogCloseBefore(done){
-      done()
+    closeDialog() {
+      // control dialog visible
+      if(this.modelChanged){
+        this.confirmDialogVisible = true
+        return
+      }
+      this.dialogVisible = false
     },
     doSave() {
-      if(this.action == 'view') {
-        this.dialogVisible = false
-        return
-      } 
-      const promise = this.action == 'add'
-        ? this.addFn(this.innerModel)
-        : this.updateFn(this.innerModel)
+      this.$refs.modelForm.validate((valid) => {
+        if(valid){
+          if(this.action == 'view') {
+            this.dialogVisible = false
+            return
+          } 
+          const promise = this.action == 'add'
+            ? this.addFn(this.innerModel)
+            : this.updateFn(this.innerModel)
 
-      promise.then(response => {
-        if(response.code != 20000) {
-          this.$message.error(response.message)
-          return
+          promise.then(response => {
+            if(response.code != 20000) {
+              this.$message.error(response.message)
+              return
+            }
+            this.$message.success('保存成功')
+            this.query()
+            this.dialogVisible = false
+          })
         }
-        this.$message.success('保存成功')
-        this.query()
-        this.dialogVisible = false
       })
+    },
+    dialogClosed () {
+      this.$refs.modelForm.resetFields()
     }
   },
   computed: {
-    title(){
+    title() {
+      let actionText = ''
       switch(this.action)
       {
-        case 'view': return '查看' + this.dialogTitle
-        case 'add': return '新增' + this.dialogTitle
-        case 'edit': return '修改' + this.dialogTitle
-        default: return this.dialogTitle
+        case 'view': actionText = '查看'; break;
+        case 'add': actionText = '新增'; break;
+        case 'edit': actionText = '修改'; break;
+        default: break;
       }
+      const star = this.modelChanged ? '*' : ''
+      return `${actionText}${this.dialogTitle} ${star}`
     },
     queryFn(){
       if(this.queryDelegate) return this.queryDelegate
@@ -271,6 +317,7 @@ export default {
     innerModel: {
       handler: function(newValue) {
         this.$emit('update:model', newValue)
+        this.modelChanged = true
       },
       deep: true
     },

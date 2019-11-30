@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class="prefix + 'top'">
-      <el-row>
+      <el-row type="flex" justify="space-between">
         <el-col :span="16">
           <div :class="prefix + 'top-left'">
             <slot name="topLeft"></slot>
