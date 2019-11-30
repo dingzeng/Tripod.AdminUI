@@ -8,8 +8,24 @@ export function getRoutes() {
 }
 
 export function getRoles() {
+  return new Promise(function(resolve, reject){
+    return request({
+      url: '/system/roles',
+      method: 'get'
+    }).then(response => {
+      resolve({
+        data: response.data.Roles,
+        total: response.data.Roles.length
+      })
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+export function getRole(id) {
   return request({
-    url: '/system/roles',
+    url: '/system/role/' + id,
     method: 'get'
   })
 }

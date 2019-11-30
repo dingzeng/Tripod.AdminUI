@@ -1,42 +1,65 @@
 <template>
   <div>
-    <el-form :inline="true" :model="params" class="demo-form-inline" size="small">
-      <el-form-item label="角色名称">
-        <el-input v-model="params.name" placeholder="角色名称" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="query">查询</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="data" style="width: 100%">
-      <el-table-column prop="Id" label="编码" width="100" />
-      <el-table-column prop="Name" label="名字" width="100" />
-      <el-table-column prop="Memo" label="备注" />
-    </el-table>
+    <data-list 
+      uri="/system/role"
+      dialogTitle="角色"
+      :columns="columns" 
+      :queryParams="params"
+      :paramsRules="paramsRules"
+      :isPaging="false"
+      :model.sync="model">
+      <template slot="query-form">
+        <el-form-item label="角色名称">
+          <el-input v-model="params.name" placeholder="角色名称" />
+        </el-form-item>
+      </template>
+      <template>
+        <el-form-item label="角色名称">
+          <el-input v-model="model.Name"></el-input>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="model.Memo"></el-input>
+        </el-form-item>
+      </template>
+    </data-list>
   </div>
 </template>
 
 <script>
-import { getRoles } from '@/api/role'
+import DataList from '@/views/components/data-list/index'
 export default {
   name: 'SystemRole',
+  components: { DataList },
   data() {
     return {
-      params: {
-        name: ''
-      },
-      data: []
+      columns: [
+        {
+          type: 'selection',
+          width: 55
+        },{
+          prop: 'Id',
+          label: '编码',
+          width: 100
+        },{
+          prop: 'Name',
+          label: '名称',
+          width: 100
+        },{
+          prop: 'Memo',
+          label: '备注'
+        },{
+          type: '_opt',
+          label: '操作',
+          width: 150,
+          actions: ['edit','delete']
+        }
+      ],
+      params: { },
+      paramsRules: [],
+      model: {}
     }
-  },
-  mounted() {
-    this.query()
   },
   methods: {
-    query() {
-      getRoles().then(response => {
-        this.data = response.data.Roles
-      })
-    }
   }
 }
 </script>>
