@@ -5,7 +5,6 @@
       dialogTitle="角色"
       dialogWidth="500px"
       :columns="columns" 
-      :queryParams="params"
       :modelRules="modelRules"
       :isPaging="false"
       :model.sync="model">
@@ -28,29 +27,7 @@ export default {
   components: { DataList },
   data() {
     return {
-      columns: [
-        {
-          type: 'selection',
-          width: 55
-        },{
-          prop: 'Id',
-          label: '编码',
-          width: 100
-        },{
-          prop: 'Name',
-          label: '名称',
-          width: 100
-        },{
-          prop: 'Memo',
-          label: '备注'
-        },{
-          type: '_opt',
-          label: '操作',
-          width: 150,
-          actions: ['edit','delete']
-        }
-      ],
-      params: { },
+      columns: [],
       modelRules: {
         Name: [
           { required: true, message: '请输入角色名称', trigger: 'blur' }
@@ -60,6 +37,30 @@ export default {
     }
   },
   methods: {
+  },
+  created() {
+    this.columns = [
+      {
+        type: 'selection',
+        width: 55
+      },{
+        prop: 'Id',
+        label: '编码',
+        width: 100
+      },{
+        prop: 'Name',
+        label: '名称',
+        width: 100
+      },{
+        prop: 'Memo',
+        label: '备注'
+      },{
+        type: '_opt',
+        label: '操作',
+        width: 150,
+        actions: ['edit','delete']
+      }
+    ]
   }
 }
 </script>>

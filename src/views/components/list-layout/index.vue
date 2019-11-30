@@ -44,4 +44,9 @@ $prefix: "app-list-layout-";
     text-align: right;
   }
 }
+.#{$prefix}footer {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
 </style>

@@ -3,7 +3,7 @@
     <list-layout>
       <template slot="topLeft">
         <el-form :inline="true" :model="queryParams" class="demo-form-inline" size="small">
-          <slot name="query-form"></slot>
+          <slot name="queryForm"></slot>
           <el-form-item v-if="$slots.queryForm">
             <el-button type="primary" icon="el-icon-search" @click="query">查询</el-button>
           </el-form-item>
@@ -13,7 +13,7 @@
         <el-button type="primary" icon="el-icon-plus" size="small" plain @click="handleAdd">新增</el-button>
       </template>
       <template>
-        <el-table :data="data" style="width: 100%" stripe highlight-current-row>
+        <el-table :data="data" style="width: 100%" stripe highlight-current-row @row-dblclick="handleView">
           <template v-for="col in columns">
             <el-table-column v-if="col.type=='_opt'" label="操作" width="150" :key="col.prop">
               <template slot-scope="scope">
@@ -33,7 +33,7 @@
         </el-table>
       </template>
       <template slot="footer">
-        <Pagination v-if="isPaging" :total="total" :page="page" :limit="limit"></Pagination>
+        <Pagination v-if="isPaging" :total="totalCount" :page="pageIndex" :limit="pageSize"></Pagination>
       </template>
     </list-layout>
     <el-dialog 
@@ -49,6 +49,7 @@
         ref="modelForm"
         :model="innerModel" 
         :rules="modelRules" 
+        :disabled="action=='view'"
         label-width="100px" 
         size="small">
         <slot></slot>
@@ -87,9 +88,9 @@ export default {
     return {
       prefix: prefix,
       data: [],
-      page: 1,
-      limit: 20,
-      total: 0,
+      pageIndex: 1,
+      pageSize: 20,
+      totalCount: 0,
       dialogVisible: false,
       confirmDialogVisible: false,
       innerModel: this.model,
@@ -155,14 +156,14 @@ export default {
         params: this.queryParams
       }
       if(this.isPaging) {
-        request.page = this.page
-        request.limit = this.limit
+        request.pageIndex = this.pageIndex
+        request.pageSize = this.pageSize
       }
       this.queryFn(request).then(response => {
         const { data } = response
         if(this.isPaging) {
           this.data = data.list
-          this.total = data.total
+          this.totalCount = data.totalCount
         } else {
           this.data = data
         }
@@ -173,6 +174,20 @@ export default {
       this.dialogVisible = true
       this.initFn().then(response => {
         this.innerModel = Object.assign({}, this.model, response.data)
+        this.$nextTick(() => {
+          this.modelChanged = false
+        })
+      })
+    },
+    handleView(row, column, event) {
+      this.action = 'view'
+      this.dialogVisible = true
+      this.getFn(row[this.pk]).then(response => {
+        if(response.code != 20000) {
+          this.$message.error(response.message)
+          return
+        }
+        this.innerModel = response.data
         this.$nextTick(() => {
           this.modelChanged = false
         })
@@ -255,7 +270,7 @@ export default {
     queryFn(){
       if(this.queryDelegate) return this.queryDelegate
       return function(query) {
-        const obj = Object.assign({}, query.params, { page: query.page, limit: query.limit })
+        const obj = Object.assign({}, query.params, { pageIndex: query.pageIndex, pageSize: query.pageSize })
         const querystring = qs.stringify(obj)
         return request({
           url: this.uri + 's?' + querystring,
