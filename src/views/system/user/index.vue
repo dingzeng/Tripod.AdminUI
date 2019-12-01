@@ -1,6 +1,6 @@
 <template>
   <div>
-    <data-list 
+    <list-page
       uri="/system/user"
       dialogTitle="用户"
       dialogWidth="500px"
@@ -14,13 +14,13 @@
       </template>
       <template>
         <el-form-item prop="BranchCode" label="所属机构">
-          <branch-select></branch-select>
+          <ref-input type="branch" v-model="model.BranchCode" :label.sync="model.BranchName"></ref-input>
         </el-form-item>
         <el-form-item prop="Username" label="用户名">
           <el-input v-model="model.Username"></el-input>
         </el-form-item>
         <el-form-item prop="Password" label="密码">
-          <el-input v-model="model.Password" type="password"></el-input>
+          <el-input v-model="model.Password" type="password" show-password></el-input>
         </el-form-item>
         <el-form-item prop="Name" label="姓名">
           <el-input v-model="model.Name"></el-input>
@@ -32,21 +32,24 @@
           <el-switch v-model="model.Status"></el-switch>
         </el-form-item>
       </template>
-    </data-list>
+    </list-page>
   </div>
 </template>
 
 <script>
-import BranchSelect from '@/views/components/selects/branchSelect'
-import DataList from '@/views/components/data-list/index'
+import RefInput from '@/views/components/ref-input/index'
+import ListPage from '@/views/components/list-page/index'
 export default {
   name: 'SystemUser',
-  components: { DataList, BranchSelect },
+  components: { ListPage, RefInput },
   data() {
     return {
       queryParams: {},
       columns: [],
       modelRules: {
+        BranchCode: [
+          { required: true, message: '请选择用户所属机构', trigger: 'blur' }
+        ],
         Username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
@@ -58,11 +61,14 @@ export default {
         ]
       },
       model: {
-        Status: true
+        Status: true,
+        BranchCode: '',
+        BranchName: ''
       }
     }
   },
   methods: {
+    
   },
   created(){
     this.columns = [

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <data-list 
+    <list-page
       uri="/system/role"
       dialogTitle="角色"
       dialogWidth="500px"
@@ -16,15 +16,15 @@
           <el-input v-model="model.Memo"></el-input>
         </el-form-item>
       </template>
-    </data-list>
+    </list-page>
   </div>
 </template>
 
 <script>
-import DataList from '@/views/components/data-list/index'
+import ListPage from '@/views/components/list-page/index'
 export default {
   name: 'SystemRole',
-  components: { DataList },
+  components: { ListPage },
   data() {
     return {
       columns: [],

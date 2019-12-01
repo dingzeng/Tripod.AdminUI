@@ -76,17 +76,15 @@
 </template>
 
 <script>
-const prefix = 'app-data-list-'
 import qs from 'qs'
 import request from '@/utils/request'
 import ListLayout from '@/views/components/list-layout/index'
 import Pagination from '@/components/Pagination/index'
 export default {
-  name: 'DataList',
+  name: 'ListPage',
   components: { ListLayout, Pagination },
   data () {
     return {
-      prefix: prefix,
       data: [],
       pageIndex: 1,
       pageSize: 20,
