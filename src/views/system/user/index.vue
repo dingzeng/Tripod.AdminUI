@@ -13,8 +13,8 @@
         </el-form-item>
       </template>
       <template>
-        <el-form-item prop="BranchCode" label="所属机构">
-          <ref-input type="branch" v-model="model.BranchCode" :label.sync="model.BranchName"></ref-input>
+        <el-form-item prop="BranchId" label="所属机构">
+          <ref-input type="branch" v-model="model.BranchId" :label.sync="model.BranchName"></ref-input>
         </el-form-item>
         <el-form-item prop="Username" label="用户名">
           <el-input v-model="model.Username"></el-input>
@@ -47,7 +47,7 @@ export default {
       queryParams: {},
       columns: [],
       modelRules: {
-        BranchCode: [
+        BranchId: [
           { required: true, message: '请选择用户所属机构', trigger: 'blur' }
         ],
         Username: [
@@ -60,11 +60,7 @@ export default {
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ]
       },
-      model: {
-        Status: true,
-        BranchCode: '',
-        BranchName: ''
-      }
+      model: { }
     }
   },
   methods: {
