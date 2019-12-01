@@ -1,19 +1,19 @@
 <template>
   <div class="menu-wrapper">
-    <template v-if="item.IsLeaf">
-      <app-link :to="item.Path">
-        <el-menu-item :index="item.Code" :class="{'submenu-title-noDropdown':!item.IsLeaf}">
-          <item :icon="item.Icon" :title="item.Name" />
+    <template v-if="item.isLeaf">
+      <app-link :to="item.path">
+        <el-menu-item :index="item.code" :class="{'submenu-title-noDropdown':!item.isLeaf}">
+          <item :icon="item.icon" :title="item.name" />
         </el-menu-item>
       </app-link>
     </template>
-    <el-submenu v-else ref="subMenu" :index="item.Code" popper-append-to-body>
+    <el-submenu v-else ref="subMenu" :index="item.code" popper-append-to-body>
       <template slot="title">
-        <item :icon="item.Icon" :title="item.Name" />
+        <item :icon="item.icon" :title="item.name" />
       </template>
       <sidebar-item
-        v-for="child in item.Children"
-        :key="child.Path"
+        v-for="child in item.children"
+        :key="child.path"
         :is-nest="true"
         :item="child"
         class="nest-menu"

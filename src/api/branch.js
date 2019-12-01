@@ -8,8 +8,8 @@ export function query(params) {
       method: 'get'
     }).then(response => {
       resolve({
-        list: response.data.Branchs,
-        totalCount: response.data.TotalCount
+        list: response.data.branchs,
+        totalCount: response.data.totalCount
       })
     }).catch(error => {
       reject(error)

@@ -103,7 +103,7 @@ export default {
     },
     pk: {
       type: String,
-      default: 'Id'
+      default: 'id'
     },
     queryDelegate: Function,
     getDelegate: Function,

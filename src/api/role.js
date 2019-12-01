@@ -14,8 +14,8 @@ export function getRoles() {
       method: 'get'
     }).then(response => {
       resolve({
-        data: response.data.Roles,
-        total: response.data.Roles.length
+        data: response.data.roles,
+        total: response.data.roles.length
       })
     }).catch(error => {
       reject(error)

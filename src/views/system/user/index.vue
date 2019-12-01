@@ -13,23 +13,23 @@
         </el-form-item>
       </template>
       <template>
-        <el-form-item prop="BranchId" label="所属机构">
-          <ref-input type="branch" v-model="model.BranchId" :label.sync="model.BranchName"></ref-input>
+        <el-form-item prop="branchId" label="所属机构">
+          <ref-input type="branch" v-model="model.branchId" :label.sync="model.branchName"></ref-input>
         </el-form-item>
-        <el-form-item prop="Username" label="用户名">
-          <el-input v-model="model.Username"></el-input>
+        <el-form-item prop="username" label="用户名">
+          <el-input v-model="model.username"></el-input>
         </el-form-item>
-        <el-form-item prop="Password" label="密码">
-          <el-input v-model="model.Password" type="password" show-password></el-input>
+        <el-form-item prop="password" label="密码">
+          <el-input v-model="model.password" type="password" show-password></el-input>
         </el-form-item>
-        <el-form-item prop="Name" label="姓名">
-          <el-input v-model="model.Name"></el-input>
+        <el-form-item prop="name" label="姓名">
+          <el-input v-model="model.name"></el-input>
         </el-form-item>
-        <el-form-item prop="Mobile" label="手机号">
-          <el-input v-model="model.Mobile"></el-input>
+        <el-form-item prop="mobile" label="手机号">
+          <el-input v-model="model.mobile"></el-input>
         </el-form-item>
-        <el-form-item prop="Status" label="状态">
-          <el-switch v-model="model.Status"></el-switch>
+        <el-form-item prop="status" label="状态">
+          <el-switch v-model="model.status"></el-switch>
         </el-form-item>
       </template>
     </list-page>
@@ -47,16 +47,16 @@ export default {
       queryParams: {},
       columns: [],
       modelRules: {
-        BranchId: [
+        branchId: [
           { required: true, message: '请选择用户所属机构', trigger: 'blur' }
         ],
-        Username: [
+        username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        Password: [
+        password: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ],
-        Name: [
+        name: [
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ]
       },
@@ -72,23 +72,23 @@ export default {
         type: 'selection',
         width: 55
       },{
-        prop: 'Id',
+        prop: 'id',
         label: '编码',
         width: 100
       },{
-        prop: 'Username',
+        prop: 'username',
         label: '用户名',
         width: 150
       },{
-        prop: 'Name',
+        prop: 'name',
         label: '姓名',
         width: 150
       },{
-        prop: 'Mobile',
+        prop: 'mobile',
         label: '手机号',
         width: 200
       },{
-        prop: 'Status',
+        prop: 'status',
         label: '状态'
       },{
         type: '_opt',

@@ -38,19 +38,19 @@ export default {
         type: 'selection',
         width: 55
       },{
-        prop: 'Id',
+        prop: 'id',
         label: '机构编码',
         width: 100
       },{
-        prop: 'Name',
+        prop: 'name',
         label: '机构名称',
         width: 200
       },{
-        prop: 'Type',
+        prop: 'type',
         label: '机构类型',
         width: 150
       },{
-        prop: 'ContactsName',
+        prop: 'contactsName',
         label: '联系人',
         width: 100
       }
