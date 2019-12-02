@@ -92,6 +92,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/archive',
+    component: Layout,
+    children: [
+      {
+        path: 'branchGroup',
+        component: () => import('@/views/archive/branch/branchGroup'),
+        name: 'ArchiveBranchGroup',
+        meta: { title: '机构组' }
+      },
+      {
+        path: 'branch',
+        component: () => import('@/views/archive/branch/branch'),
+        name: 'ArchiveBranch',
+        meta: { title: '机构档案' }
+      }
+    ]
+  },
+  {
     path: '/system',
     component: Layout,
     children: [
