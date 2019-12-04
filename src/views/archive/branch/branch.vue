@@ -7,6 +7,9 @@
 export default {
   name: 'ArchiveBranch',
   data() {
+    return {
+      
+    }
   }
 }
 </script>
