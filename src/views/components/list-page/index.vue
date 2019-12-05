@@ -16,24 +16,36 @@
         <el-table
           :data="data"
           style="width: 100%"
+          size='small'
           stripe
+          border
           highlight-current-row
           @row-dblclick="handleView"
         >
           <template v-for="col in columns">
-            <el-table-column v-if="col.type=='_opt'" label="操作" width="150" :key="col.prop">
+            <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop">
               <template slot-scope="scope">
                 <el-button
                   v-if="col.actions.indexOf('edit') > -1"
                   size="mini"
+                  icon="el-icon-edit"
                   @click="handleEdit(scope.$index, scope.row)"
-                >编辑</el-button>
+                ></el-button>
                 <el-button
                   v-if="col.actions.indexOf('delete') > -1"
                   size="mini"
-                  type="danger"
+                  icon="el-icon-delete"
                   @click="handleDelete(scope.$index, scope.row)"
-                >删除</el-button>
+                ></el-button>
+              </template>
+            </el-table-column>
+            <el-table-column 
+              v-else-if="col.type=='tag'"
+              :label="col.label"
+              :key="col.prop"
+              :width="col.width">
+              <template slot-scope="scope">
+                <el-tag :type="col.tagTypes[scope.row[col.prop]]">{{col.tagLabels[scope.row[col.prop]]}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column
@@ -48,7 +60,7 @@
         </el-table>
       </template>
       <template slot="footer">
-        <Pagination v-if="isPaging" :total="totalCount" :page="pageIndex" :limit="pageSize"></Pagination>
+        <Pagination v-if="isPaging" :total="totalCount" :page.sync="pageIndex" :limit.sync="pageSize" @pagination="handlePaging"></Pagination>
       </template>
     </list-layout>
     <el-dialog
@@ -239,6 +251,9 @@ export default {
         });
       });
     },
+    handlePaging() {
+      this.query()
+    },
     closeDialog() {
       // control dialog visible
       if (this.modelChanged) {
@@ -380,3 +395,8 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  /deep/ .el-form-item {
+    margin-bottom: 0px;
+  }
+</style>

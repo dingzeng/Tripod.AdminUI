@@ -54,7 +54,7 @@ export default {
         prop: 'memo',
         label: '备注'
       }, {
-        type: '_opt',
+        type: 'opt',
         label: '操作',
         width: 150,
         actions: ['edit', 'delete']
