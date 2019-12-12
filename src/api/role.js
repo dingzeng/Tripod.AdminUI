@@ -1,16 +1,9 @@
 import request from '@/utils/request'
 
-export function getRoutes() {
-  return request({
-    url: '/routes',
-    method: 'get'
-  })
-}
-
 export function getRoles() {
   return new Promise(function(resolve, reject){
     return request({
-      url: '/system/roles',
+      url: '/system/role',
       method: 'get'
     }).then(response => {
       resolve({

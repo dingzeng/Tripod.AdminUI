@@ -4,7 +4,7 @@ import qs from 'qs'
 export function query(params) {
   return new Promise(function(resolve, reject){
     request({
-      url: '/archive/branchs?' + qs.stringify(params),
+      url: '/archive/branch?' + qs.stringify(params),
       method: 'get'
     }).then(response => {
       resolve({

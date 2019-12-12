@@ -318,7 +318,7 @@ export default {
         });
         const querystring = qs.stringify(obj);
         return request({
-          url: this.uri + "s?" + querystring,
+          url: this.uri + "?" + querystring,
           method: "get"
         });
       }.bind(this);

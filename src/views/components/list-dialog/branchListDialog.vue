@@ -26,7 +26,7 @@ export default {
   name: 'BranchListDialog',
   data() {
     return {
-      uri: '/archive/branchs',
+      uri: '/archive/branch',
       columns: [],
       queryParams: {},
     }
