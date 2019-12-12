@@ -46,7 +46,7 @@ export default {
         prop: 'name',
         label: '店组名称'
       },{
-        type: '_opt',
+        type: 'opt',
         label: '操作',
         width: 150,
         actions: ['edit', 'delete']

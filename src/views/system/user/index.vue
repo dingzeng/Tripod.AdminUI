@@ -107,10 +107,19 @@ export default {
       },
       {
         prop: "status",
-        label: "状态"
+        type: "tag",
+        label: "状态",
+        tagTypes: {
+          0: 'info',
+          1: 'success'
+        },
+        tagLabels: {
+          0: '禁用',
+          1: '启用'
+        }
       },
       {
-        type: "_opt",
+        type: "opt",
         label: "操作",
         width: 150,
         actions: ["edit", "delete"]
