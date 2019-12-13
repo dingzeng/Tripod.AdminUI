@@ -2,7 +2,7 @@
   <div>
     <list-layout>
       <template slot="topLeft">
-        <el-form :inline="true" :model="queryParams" class="demo-form-inline" size="small">
+        <el-form :inline="true" :model="queryParams" class="query-form-inline" size="small">
           <slot name="queryForm"></slot>
           <el-form-item v-if="$slots.queryForm">
             <el-button type="primary" icon="el-icon-search" @click="query">查询</el-button>
@@ -13,51 +13,59 @@
         <el-button type="primary" icon="el-icon-plus" size="small" plain @click="handleAdd">新增</el-button>
       </template>
       <template>
-        <el-table
-          :data="data"
-          style="width: 100%"
-          size='small'
-          stripe
-          border
-          highlight-current-row
-          @row-dblclick="handleView"
-        >
-          <template v-for="col in columns">
-            <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop">
-              <template slot-scope="scope">
-                <el-button
-                  v-if="col.actions.indexOf('edit') > -1"
-                  size="mini"
-                  icon="el-icon-edit"
-                  @click="handleEdit(scope.$index, scope.row)"
-                ></el-button>
-                <el-button
-                  v-if="col.actions.indexOf('delete') > -1"
-                  size="mini"
-                  icon="el-icon-delete"
-                  @click="handleDelete(scope.$index, scope.row)"
-                ></el-button>
+        <el-row>
+          <el-col :span="6">
+            <slot name="mainLeft"></slot>
+          </el-col>
+          <el-col :span="$slots.mainLeft ? 18 : 24">
+            <el-table
+              :data="data"
+              style="width: 100%"
+              size='small'
+              stripe
+              border
+              highlight-current-row
+              @row-dblclick="handleView"
+            >
+              <template v-for="col in columns">
+                <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop">
+                  <template slot-scope="scope">
+                    <el-button
+                      v-if="col.actions.indexOf('edit') > -1"
+                      size="mini"
+                      icon="el-icon-edit"
+                      @click="handleEdit(scope.$index, scope.row)"
+                    ></el-button>
+                    <el-button
+                      v-if="col.actions.indexOf('delete') > -1"
+                      size="mini"
+                      icon="el-icon-delete"
+                      @click="handleDelete(scope.$index, scope.row)"
+                    ></el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column 
+                  v-else-if="col.type=='tag'"
+                  :label="col.label"
+                  :key="col.prop"
+                  :width="col.width">
+                  <template slot-scope="scope">
+                    <el-tag :type="col.tagTypes[scope.row[col.prop]]">{{col.tagLabels[scope.row[col.prop]]}}</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  v-else
+                  :key="col.prop"
+                  :type="col.type"
+                  :prop="col.prop"
+                  :label="col.label"
+                  :width="col.width"
+                ></el-table-column>
               </template>
-            </el-table-column>
-            <el-table-column 
-              v-else-if="col.type=='tag'"
-              :label="col.label"
-              :key="col.prop"
-              :width="col.width">
-              <template slot-scope="scope">
-                <el-tag :type="col.tagTypes[scope.row[col.prop]]">{{col.tagLabels[scope.row[col.prop]]}}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column
-              v-else
-              :key="col.prop"
-              :type="col.type"
-              :prop="col.prop"
-              :label="col.label"
-              :width="col.width"
-            ></el-table-column>
-          </template>
-        </el-table>
+            </el-table>
+          </el-col>
+        </el-row>
+        
       </template>
       <template slot="footer">
         <Pagination v-if="isPaging" :total="totalCount" :page.sync="pageIndex" :limit.sync="pageSize" @pagination="handlePaging"></Pagination>
@@ -396,7 +404,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-  /deep/ .el-form-item {
-    margin-bottom: 0px;
+  .query-form-inline {
+    // 抵消form-item默认的外边距
+    margin-bottom: -18px;
   }
 </style>

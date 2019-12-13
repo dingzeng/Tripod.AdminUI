@@ -36,16 +36,19 @@ export default {
     this.columns = [
       {
         type: 'selection',
-        width: 55
+        width: 55,
+        align: 'center'
       },
       {
         prop: 'id',
         label: '编码',
         width: 100
-      },{
+      },
+      {
         prop: 'name',
         label: '店组名称'
-      },{
+      },
+      {
         type: 'opt',
         label: '操作',
         width: 150,

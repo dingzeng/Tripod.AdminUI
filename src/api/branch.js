@@ -16,3 +16,10 @@ export function query(params) {
     })
   })
 }
+
+export function loadBranchTreeData() {
+  return request({
+    url: '/archive/branch/tree',
+    method: 'get'
+  })
+}
