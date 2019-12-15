@@ -3,7 +3,8 @@ export default {
   components: { ListDialog },
   data() {
     return {
-      innerVisible: this.visible
+      innerVisible: this.visible,
+      innerQueryParams: this.queryParams
     }
   },
   props: {
@@ -11,6 +12,10 @@ export default {
       type: Boolean,
       default: false
     },
+    queryParams: {
+      type: Object,
+      default: () => {}
+    }
   },
   methods: {
     /**
@@ -29,6 +34,18 @@ export default {
     },
     innerVisible(newValue) {
       this.$emit('update:visible', newValue)
+    },
+    queryParams: {
+      handler: function(newValue) {
+        this.innerQueryParams = newValue
+      },
+      deep: true
+    },
+    innerQueryParams: {
+      handler: function(newValue) {
+        this.$emit('update:queryParams', newValue)
+      },
+      deep: true
     }
   }
 }

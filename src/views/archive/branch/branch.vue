@@ -1,9 +1,10 @@
 <template>
   <div>
     <list-page
+      ref="listpage"
       uri="archive/branch"
       dialog-title="机构"
-      :query-params="queryParams"
+      :queryParams="queryParams"
       :columns="columns"
       :model.sync="model"
     >
@@ -17,15 +18,17 @@
           ref="branchTree"
           class="filter-tree"
           default-expand-all
+          :expand-on-click-node="false"
           :data="branchTreeData"
           @node-click="handleNodeClick"
         />
       </template>
       <template>
+        <el-divider content-position="left">基础信息</el-divider>
         <el-row>
           <el-col :span="8">
-            <el-form-item prop="parentId" required label="上级机构">
-              <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" />
+            <el-form-item prop="parentId" label="上级机构" :required="model.id != '00'">
+              <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :queryParams="parentBranchQueryParams" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -58,7 +61,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-divider />
+        <el-divider content-position="left">通讯信息</el-divider>
         <el-row>
           <el-col :span="8">
             <el-form-item prop="contactsName" label="联系人">
@@ -88,7 +91,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-divider />
+        <el-divider content-position="left">维护信息</el-divider>
         <el-row>
           <el-col :span="8">
             <el-form-item prop="createOperName" label="创建人">
@@ -133,9 +136,11 @@ export default {
   components: { ListPage, RefInput },
   data() {
     return {
-      queryParams: {},
+      queryParams: {
+        parentId: ''
+      },
       columns: [],
-      model: {},
+      model: { },
       modelRules: [],
       branchType,
       branchTreeData: []
@@ -145,6 +150,18 @@ export default {
     loadBranchTreeData().then(response => {
       this.branchTreeData = response.data
     })
+  },
+  methods: {
+    handleNodeClick(data) {
+      this.queryParams.parentId = data.id
+    }
+  },
+  computed: {
+    parentBranchQueryParams() {
+      return {
+        typeList: '0,1'
+      }
+    }
   },
   created() {
     this.columns = [
@@ -165,8 +182,10 @@ export default {
       },
       {
         prop: 'type',
+        type: 'enum',
         label: '机构类型',
-        width: 100
+        width: 100,
+        enums: branchType
       },
       {
         prop: 'contactsName',
@@ -186,19 +205,8 @@ export default {
       {
         prop: 'address',
         label: '地址'
-      },
-      {
-        type: 'opt',
-        label: '操作',
-        width: 150,
-        actions: ['edit', 'delete']
       }
     ]
-  },
-  methods: {
-    handleNodeClick(data) {
-      console.log(data)
-    }
   }
 }
 </script>

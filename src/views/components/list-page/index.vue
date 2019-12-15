@@ -14,58 +14,17 @@
       </template>
       <template>
         <el-row>
-          <el-col :span="6">
+          <el-col :span="4">
             <slot name="mainLeft"></slot>
           </el-col>
-          <el-col :span="$slots.mainLeft ? 18 : 24">
-            <el-table
-              :data="data"
-              style="width: 100%"
-              size='small'
-              stripe
-              border
-              highlight-current-row
-              @row-dblclick="handleView"
-            >
-              <template v-for="col in columns">
-                <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop">
-                  <template slot-scope="scope">
-                    <el-button
-                      v-if="col.actions.indexOf('edit') > -1"
-                      size="mini"
-                      icon="el-icon-edit"
-                      @click="handleEdit(scope.$index, scope.row)"
-                    ></el-button>
-                    <el-button
-                      v-if="col.actions.indexOf('delete') > -1"
-                      size="mini"
-                      icon="el-icon-delete"
-                      @click="handleDelete(scope.$index, scope.row)"
-                    ></el-button>
-                  </template>
-                </el-table-column>
-                <el-table-column 
-                  v-else-if="col.type=='tag'"
-                  :label="col.label"
-                  :key="col.prop"
-                  :width="col.width">
-                  <template slot-scope="scope">
-                    <el-tag :type="col.tagTypes[scope.row[col.prop]]">{{col.tagLabels[scope.row[col.prop]]}}</el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  v-else
-                  :key="col.prop"
-                  :type="col.type"
-                  :prop="col.prop"
-                  :label="col.label"
-                  :width="col.width"
-                ></el-table-column>
-              </template>
-            </el-table>
+          <el-col :span="$slots.mainLeft ? 20 : 24">
+            <data-table 
+              :data="data" 
+              :columns="listPageColumns"
+              @row-dblclick="handleView">
+            </data-table>
           </el-col>
         </el-row>
-        
       </template>
       <template slot="footer">
         <Pagination v-if="isPaging" :total="totalCount" :page.sync="pageIndex" :limit.sync="pageSize" @pagination="handlePaging"></Pagination>
@@ -118,9 +77,10 @@ import qs from "qs";
 import request from "@/utils/request";
 import ListLayout from "@/views/components/list-layout/index";
 import Pagination from "@/components/Pagination/index";
+import DataTable from '@/views/components/data-table/index'
 export default {
   name: "ListPage",
-  components: { ListLayout, Pagination },
+  components: { ListLayout, Pagination, DataTable },
   data() {
     return {
       data: [],
@@ -376,6 +336,28 @@ export default {
           method: "delete"
         });
       }.bind(this);
+    },
+    listPageColumns() {
+      const cols = this.columns
+      cols.push({
+        type: 'opt',
+        label: '操作',
+        width: 150,
+        buttons: [
+          {
+            icon: 'el-icon-edit',
+            onclick: (index, row) => {
+              this.handleEdit(index, row)
+            }
+          }, {
+            icon: 'el-icon-delete',
+            onclick: (index, row) => {
+              this.handleDelete(index, row)
+            }
+          }
+        ]
+      })
+      return cols
     }
   },
   mounted() {
@@ -398,7 +380,14 @@ export default {
       deep: true
     },
     model(newValue) {
+      console.log('watch model:', newValue)
       this.innerModel = newValue;
+    },
+    queryParams: {
+      handler: function(newValue) {
+        this.query()
+      },
+      deep: true
     }
   }
 };

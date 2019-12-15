@@ -117,12 +117,6 @@ export default {
           0: '禁用',
           1: '启用'
         }
-      },
-      {
-        type: "opt",
-        label: "操作",
-        width: 150,
-        actions: ["edit", "delete"]
       }
     ];
   }

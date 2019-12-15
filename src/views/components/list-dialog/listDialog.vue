@@ -16,24 +16,13 @@
               <slot name="mainLeft"></slot>
             </el-col>
             <el-col :span="$slots.mainLeft ? 20 : 24">
-              <el-table 
+              <data-table 
                 :data="data" 
-                style="width: 100%" 
-                stripe 
-                highlight-current-row 
+                :columns="columns"
                 :height="400" 
                 @selection-change="selectionChange"
                 @row-dblclick="rowDblclick">
-                <template v-for="col in columns">
-                  <el-table-column 
-                    :key="col.prop"
-                    :type="col.type"
-                    :prop="col.prop"
-                    :label="col.label"
-                    :width="col.width">
-                  </el-table-column>
-                </template>
-              </el-table>
+              </data-table>
             </el-col>
           </el-row>
           <Pagination v-if="isPaging" :total="totalCount" :page="pageIndex" :limit="pageSize"></Pagination>
@@ -52,9 +41,10 @@
   import request from '@/utils/request'
   import ListLayout from '@/views/components/list-layout/index'
   import Pagination from '@/components/Pagination/index'
+  import DataTable from '@/views/components/data-table/index'
   export default {
     name: 'ListDialog',
-    components: { ListLayout, Pagination },
+    components: { ListLayout, Pagination, DataTable },
     data() {
       return {
         data: [],
@@ -157,6 +147,12 @@
       },
       innerVisible(newValue) {
         this.$emit('update:visible', newValue)
+      },
+      queryParams: {
+        handler: function(newValue) {
+          this.query()
+        },
+        deep: true
       }
     }
   }

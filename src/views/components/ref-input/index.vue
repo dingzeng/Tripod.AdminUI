@@ -3,9 +3,9 @@
     <el-input 
       v-model="innerLabel" 
       clearable
+      readonly
       :placeholder="placeholder"
       :disabled="disabled"
-      readonly
       @blur="inputBlur"
       @clear="inputClear">
       <el-button slot="append" icon="el-icon-menu" @click="clickMore"></el-button>
@@ -14,6 +14,7 @@
       ref="dialog"
       :is="listDialogComponentName"
       :visible.sync="dialogVisible"
+      :queryParams.sync="innerQueryParams"
       @on-complete="dialogComplete">
     </component>
   </div>
@@ -28,7 +29,8 @@ export default {
     return {
       innerValue: this.value,
       innerLabel: this.label,
-      dialogVisible: false
+      dialogVisible: false,
+      innerQueryParams: this.queryParams
     }
   },
   props: {
@@ -52,6 +54,10 @@ export default {
     readonly: {
       type: Boolean,
       default: () => false
+    },
+    queryParams: {
+      type: Object,
+      default: () => {}
     }
   },
   methods: {
@@ -80,12 +86,30 @@ export default {
     },
     value(newValue) {
       this.innerValue = newValue
+      
+      // HACK fixbug:form组件的 resetFields方法对ref-input组件绑定的label属性不会重置
+      // （只重置在form-item上写了prop的数据）
+      if(!newValue) {
+        this.innerLabel = ''
+      }
     },
     innerLabel(newValue) {
       this.$emit('update:label', newValue)
     },
     label(newValue) {
       this.innerLabel = newValue
+    },
+    queryParams: {
+      handler: function(newValue) {
+        this.innerQueryParams = newValue
+      },
+      deep: true
+    },
+    innerQueryParams: {
+      handler: function(newValue) {
+        this.$emit('update:queryParams', newValue)
+      },
+      deep: true
     }
   }
 }
