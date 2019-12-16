@@ -1,37 +1,39 @@
 <template>
   <div>
-    <el-table 
-      :data="data" 
+    <el-table
+      :data="data"
       :height="height"
-      style="width: 100%" 
-      size='small'
-      stripe 
+      style="width: 100%"
+      size="small"
+      stripe
       border
       highlight-current-row
       @selection-change="handleSelectionChange"
-      @row-dblclick="handleRowDbClick">
+      @row-dblclick="handleRowDbClick"
+    >
       <template v-for="col in columns">
-        <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop" align="center">
+        <el-table-column v-if="col.type=='opt'" :key="col.prop" label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button 
+            <el-button
               v-for="(btn, index) in col.buttons"
+              :key="index"
               size="mini"
               type="text"
-              :key="index"
               :icon="btn.icon"
-              @click="btn.onclick(scope.$index, scope.row)">
-              {{btn.text}}
+              @click="btn.onclick(scope.$index, scope.row)"
+            >
+              {{ btn.text }}
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column v-else-if="col.type=='tag'" :label="col.label" :key="col.prop" :width="col.width">
+        <el-table-column v-else-if="col.type=='tag'" :key="col.prop" :label="col.label" :width="col.width">
           <template slot-scope="scope">
-            <el-tag :type="col.tagTypes[scope.row[col.prop]]">{{col.tagLabels[scope.row[col.prop]]}}</el-tag>
+            <el-tag :type="col.tagTypes[scope.row[col.prop]]">{{ col.tagLabels[scope.row[col.prop]] }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-else-if="col.type=='enum'" :label="col.label" :key="col.prop" :width="col.width">
+        <el-table-column v-else-if="col.type=='enum'" :key="col.prop" :label="col.label" :width="col.width">
           <template slot-scope="scope">
-            {{col.enums[scope.row[col.prop]]}}
+            {{ col.enums[scope.row[col.prop]] }}
           </template>
         </el-table-column>
         <el-table-column
@@ -41,7 +43,7 @@
           :prop="col.prop"
           :label="col.label"
           :width="col.width"
-        ></el-table-column>
+        />
       </template>
     </el-table>
   </div>
@@ -50,11 +52,6 @@
 <script>
 export default {
   name: 'DataTable',
-  data() {
-    return {
-      
-    }
-  },
   props: {
     data: {
       type: Array,
@@ -65,7 +62,12 @@ export default {
       default: () => []
     },
     height: {
-      type: [String,Number]
+      type: [String, Number]
+    }
+  },
+  data() {
+    return {
+
     }
   },
   methods: {

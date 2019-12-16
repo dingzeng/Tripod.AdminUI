@@ -3,7 +3,7 @@
     <list-layout>
       <template slot="topLeft">
         <el-form :inline="true" :model="queryParams" class="query-form-inline" size="small">
-          <slot name="queryForm"></slot>
+          <slot name="queryForm" />
           <el-form-item v-if="$slots.queryForm">
             <el-button type="primary" icon="el-icon-search" @click="query">查询</el-button>
           </el-form-item>
@@ -15,19 +15,19 @@
       <template>
         <el-row>
           <el-col :span="4">
-            <slot name="mainLeft"></slot>
+            <slot name="mainLeft" />
           </el-col>
           <el-col :span="$slots.mainLeft ? 20 : 24">
-            <data-table 
-              :data="data" 
+            <data-table
+              :data="data"
               :columns="listPageColumns"
-              @row-dblclick="handleView">
-            </data-table>
+              @row-dblclick="handleView"
+            />
           </el-col>
         </el-row>
       </template>
       <template slot="footer">
-        <Pagination v-if="isPaging" :total="totalCount" :page.sync="pageIndex" :limit.sync="pageSize" @pagination="handlePaging"></Pagination>
+        <Pagination v-if="isPaging" :total="totalCount" :page.sync="pageIndex" :limit.sync="pageSize" @pagination="handlePaging" />
       </template>
     </list-layout>
     <el-dialog
@@ -48,11 +48,11 @@
         label-width="100px"
         size="small"
       >
-        <slot></slot>
+        <slot />
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeDialog" size="small">取 消</el-button>
-        <el-button type="primary" @click="doSave" size="small">确 定</el-button>
+        <el-button size="small" @click="closeDialog">取 消</el-button>
+        <el-button type="primary" size="small" @click="doSave">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -64,37 +64,23 @@
     >
       <p>你想要保存更改吗？</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="confirmDialogVisible = false" size="small">取 消</el-button>
-        <el-button @click="confirmDialogVisible = false;dialogVisible = false" size="small">不保存</el-button>
-        <el-button type="primary" @click="confirmDialogVisible = false;doSave()" size="small">保 存</el-button>
+        <el-button size="small" @click="confirmDialogVisible = false">取 消</el-button>
+        <el-button size="small" @click="confirmDialogVisible = false;dialogVisible = false">不保存</el-button>
+        <el-button type="primary" size="small" @click="confirmDialogVisible = false;doSave()">保 存</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import qs from "qs";
-import request from "@/utils/request";
-import ListLayout from "@/views/components/list-layout/index";
-import Pagination from "@/components/Pagination/index";
+import qs from 'qs'
+import request from '@/utils/request'
+import ListLayout from '@/views/components/list-layout/index'
+import Pagination from '@/components/Pagination/index'
 import DataTable from '@/views/components/data-table/index'
 export default {
-  name: "ListPage",
+  name: 'ListPage',
   components: { ListLayout, Pagination, DataTable },
-  data() {
-    return {
-      data: [],
-      pageIndex: 1,
-      pageSize: 20,
-      totalCount: 0,
-      dialogVisible: false,
-      confirmDialogVisible: false,
-      innerModel: this.model,
-      action: "", // add | view | edit
-      modelChanged: false,
-      innerPage: {}
-    };
-  },
   props: {
     uri: {
       type: String,
@@ -102,7 +88,7 @@ export default {
     },
     pk: {
       type: String,
-      default: "id"
+      default: 'id'
     },
     queryDelegate: Function,
     getDelegate: Function,
@@ -132,11 +118,11 @@ export default {
     },
     dialogTitle: {
       type: String,
-      default: ""
+      default: ''
     },
     dialogWidth: {
       type: String,
-      default: "50%"
+      default: '50%'
     },
     dialogFullscreen: {
       type: Boolean,
@@ -159,192 +145,98 @@ export default {
       default: () => {}
     }
   },
-  methods: {
-    query() {
-      const request = {
-        params: this.queryParams
-      };
-      if (this.isPaging) {
-        request.pageIndex = this.pageIndex;
-        request.pageSize = this.pageSize;
-      }
-      this.queryFn(request).then(response => {
-        const { data } = response;
-        if (this.isPaging) {
-          this.data = data.list;
-          this.totalCount = data.totalCount;
-        } else {
-          this.data = data;
-        }
-      });
-    },
-    handleAdd() {
-      this.action = "add";
-      this.dialogVisible = true;
-      this.initFn().then(response => {
-        this.innerModel = Object.assign({}, this.model, response.data);
-        this.$nextTick(() => {
-          this.modelChanged = false;
-        });
-      });
-    },
-    handleView(row, column, event) {
-      this.action = "view";
-      this.dialogVisible = true;
-      this.getFn(row[this.pk]).then(response => {
-        if (response.code != 20000) {
-          this.$message.error(response.message);
-          return;
-        }
-        this.innerModel = response.data;
-        this.$nextTick(() => {
-          this.modelChanged = false;
-        });
-      });
-    },
-    handleEdit(index, row) {
-      this.action = "edit";
-      this.dialogVisible = true;
-      this.getFn(row[this.pk]).then(response => {
-        if (response.code != 20000) {
-          this.$message.error(response.message);
-          return;
-        }
-        this.innerModel = response.data;
-        this.$nextTick(() => {
-          this.modelChanged = false;
-        });
-      });
-    },
-    handleDelete(index, row) {
-      this.$confirm("确定要删除吗？", "提示").then(() => {
-        this.deleteFn(row[this.pk]).then(response => {
-          if (response.code != 20000) {
-            this.$message.error(response.message);
-            return;
-          }
-          this.$message.success("删除成功");
-          this.query();
-        });
-      });
-    },
-    handlePaging() {
-      this.query()
-    },
-    closeDialog() {
-      // control dialog visible
-      if (this.modelChanged) {
-        this.confirmDialogVisible = true;
-        return;
-      }
-      this.dialogVisible = false;
-    },
-    doSave() {
-      this.$refs.modelForm.validate(valid => {
-        if (valid) {
-          if (this.action == "view") {
-            this.dialogVisible = false;
-            return;
-          }
-          const promise =
-            this.action == "add"
-              ? this.addFn(this.innerModel)
-              : this.updateFn(this.innerModel);
-
-          promise.then(response => {
-            if (response.code != 20000) {
-              this.$message.error(response.message);
-              return;
-            }
-            this.$message.success("保存成功");
-            this.query();
-            this.dialogVisible = false;
-          });
-        }
-      });
-    },
-    dialogClosed() {
-      this.$refs.modelForm.resetFields();
+  data() {
+    return {
+      data: [],
+      pageIndex: 1,
+      pageSize: 20,
+      totalCount: 0,
+      dialogVisible: false,
+      confirmDialogVisible: false,
+      innerModel: this.model,
+      action: '', // add | view | edit
+      modelChanged: false,
+      innerPage: {}
     }
   },
   computed: {
     title() {
-      let actionText = "";
+      let actionText = ''
       switch (this.action) {
-        case "view":
-          actionText = "查看";
-          break;
-        case "add":
-          actionText = "新增";
-          break;
-        case "edit":
-          actionText = "修改";
-          break;
+        case 'view':
+          actionText = '查看'
+          break
+        case 'add':
+          actionText = '新增'
+          break
+        case 'edit':
+          actionText = '修改'
+          break
         default:
-          break;
+          break
       }
-      const star = this.modelChanged ? "*" : "";
-      return `${actionText}${this.dialogTitle} ${star}`;
+      const star = this.modelChanged ? '*' : ''
+      return `${actionText}${this.dialogTitle} ${star}`
     },
     queryFn() {
-      if (this.queryDelegate) return this.queryDelegate;
+      if (this.queryDelegate) return this.queryDelegate
       return function(query) {
         const obj = Object.assign({}, query.params, {
           pageIndex: query.pageIndex,
           pageSize: query.pageSize
-        });
-        const querystring = qs.stringify(obj);
+        })
+        const querystring = qs.stringify(obj)
         return request({
-          url: this.uri + "?" + querystring,
-          method: "get"
-        });
-      }.bind(this);
+          url: this.uri + '?' + querystring,
+          method: 'get'
+        })
+      }.bind(this)
     },
     getFn() {
-      if (this.getDelegate) return this.getDelegate;
+      if (this.getDelegate) return this.getDelegate
       return function(id) {
         return request({
-          url: this.uri + "/" + id,
-          method: "get"
-        });
-      }.bind(this);
+          url: this.uri + '/' + id,
+          method: 'get'
+        })
+      }.bind(this)
     },
     initFn() {
-      if (this.initDelegate) return this.initDelegate;
+      if (this.initDelegate) return this.initDelegate
       return function() {
         return new Promise(function(resolve, reject) {
-          resolve({});
-        });
-      }.bind(this);
+          resolve({})
+        })
+      }
     },
     addFn() {
-      if (this.addDelegate) return this.addDelegate;
+      if (this.addDelegate) return this.addDelegate
       return function(model) {
         return request({
           url: this.uri,
-          method: "post",
+          method: 'post',
           data: model
-        });
-      }.bind(this);
+        })
+      }.bind(this)
     },
     updateFn() {
-      if (this.updateDelegate) return this.updateDelegate;
+      if (this.updateDelegate) return this.updateDelegate
       return function(model) {
         return request({
           url: this.uri,
-          method: "put",
+          method: 'put',
           data: model
-        });
-      }.bind(this);
+        })
+      }.bind(this)
     },
     deleteFn() {
-      if (this.deleteDelegate) return this.deleteDelegate;
+      if (this.deleteDelegate) return this.deleteDelegate
       return function(id) {
         return request({
-          url: this.uri + "/" + id,
-          method: "delete"
-        });
-      }.bind(this);
+          url: this.uri + '/' + id,
+          method: 'delete'
+        })
+      }.bind(this)
     },
     listPageColumns() {
       const buttons = [
@@ -371,28 +263,17 @@ export default {
       return cols
     }
   },
-  mounted() {
-    if (this.loadPage) {
-      request({
-        url: this.uri + "/_page",
-        method: "get"
-      }).then(response => {
-        this.innerPage = response.data
-      });
-    }
-    this.query();
-  },
   watch: {
     innerModel: {
       handler: function(newValue) {
-        this.$emit("update:model", newValue);
-        this.modelChanged = true;
+        this.$emit('update:model', newValue)
+        this.modelChanged = true
       },
       deep: true
     },
     model(newValue) {
       console.log('watch model:', newValue)
-      this.innerModel = newValue;
+      this.innerModel = newValue
     },
     queryParams: {
       handler: function(newValue) {
@@ -412,8 +293,127 @@ export default {
       },
       deep: true
     }
+  },
+  mounted() {
+    if (this.loadPage) {
+      request({
+        url: this.uri + '/_page',
+        method: 'get'
+      }).then(response => {
+        this.innerPage = response.data
+      })
+    }
+    this.query()
+  },
+  methods: {
+    query() {
+      const request = {
+        params: this.queryParams
+      }
+      if (this.isPaging) {
+        request.pageIndex = this.pageIndex
+        request.pageSize = this.pageSize
+      }
+      this.queryFn(request).then(response => {
+        const { data } = response
+        if (this.isPaging) {
+          this.data = data.list
+          this.totalCount = data.totalCount
+        } else {
+          this.data = data
+        }
+      })
+    },
+    handleAdd() {
+      this.action = 'add'
+      this.dialogVisible = true
+      this.initFn().then(response => {
+        this.innerModel = Object.assign({}, this.model, response.data)
+        this.$nextTick(() => {
+          this.modelChanged = false
+        })
+      })
+    },
+    handleView(row, column, event) {
+      this.action = 'view'
+      this.dialogVisible = true
+      this.getFn(row[this.pk]).then(response => {
+        if (response.code != 20000) {
+          this.$message.error(response.message)
+          return
+        }
+        this.innerModel = response.data
+        this.$nextTick(() => {
+          this.modelChanged = false
+        })
+      })
+    },
+    handleEdit(index, row) {
+      this.action = 'edit'
+      this.dialogVisible = true
+      this.getFn(row[this.pk]).then(response => {
+        if (response.code != 20000) {
+          this.$message.error(response.message)
+          return
+        }
+        this.innerModel = response.data
+        this.$nextTick(() => {
+          this.modelChanged = false
+        })
+      })
+    },
+    handleDelete(index, row) {
+      this.$confirm('确定要删除吗？', '提示').then(() => {
+        this.deleteFn(row[this.pk]).then(response => {
+          if (response.code != 20000) {
+            this.$message.error(response.message)
+            return
+          }
+          this.$message.success('删除成功')
+          this.query()
+        })
+      })
+    },
+    handlePaging() {
+      this.query()
+    },
+    closeDialog() {
+      // control dialog visible
+      if (this.modelChanged) {
+        this.confirmDialogVisible = true
+        return
+      }
+      this.dialogVisible = false
+    },
+    doSave() {
+      this.$refs.modelForm.validate(valid => {
+        if (valid) {
+          if (this.action == 'view') {
+            this.dialogVisible = false
+            return
+          }
+          const promise =
+            this.action == 'add'
+              ? this.addFn(this.innerModel)
+              : this.updateFn(this.innerModel)
+
+          promise.then(response => {
+            if (response.code != 20000) {
+              this.$message.error(response.message)
+              return
+            }
+            this.$message.success('保存成功')
+            this.query()
+            this.dialogVisible = false
+          })
+        }
+      })
+    },
+    dialogClosed() {
+      this.$refs.modelForm.resetFields()
+    }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
   .query-form-inline {

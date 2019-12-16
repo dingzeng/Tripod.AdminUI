@@ -1,13 +1,14 @@
 <template>
   <div>
     <list-page
-      uri='/archive/branchGroup'
-      dialogTitle="店组管理"
-      :queryParams="queryParams"
+      uri="/archive/branchGroup"
+      dialog-title="店组管理"
+      :query-params="queryParams"
       :columns="columns"
-      :modelRules="modelRules"
+      :model-rules="modelRules"
       :model.sync="model"
-      :operations="operations">
+      :operations="operations"
+    >
       <template slot="queryForm">
         <el-form-item prop="keyword">
           <el-input v-model="queryParams.keyword" placeholder="编码/名称" />
@@ -15,15 +16,15 @@
       </template>
       <template>
         <el-form-item prop="name" label="店组名称">
-          <el-input v-model="model.name"></el-input>
+          <el-input v-model="model.name" />
         </el-form-item>
       </template>
     </list-page>
     <el-dialog title="关联机构" :visible.sync="relateBranchDialogVisible" width="650px" :close-on-click-modal="false">
-      <el-transfer v-model="relateModel.branchIdList" :data="allBranchs" :titles="['未关联机构','关联机构']"></el-transfer>
+      <el-transfer v-model="relateModel.branchIdList" :data="allBranchs" :titles="['未关联机构','关联机构']" />
       <template slot="footer">
-        <el-button @click="relateBranchDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirmRelation" size="small">确 定</el-button>
+        <el-button size="small" @click="relateBranchDialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmRelation">确 定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -65,20 +66,8 @@ export default {
       allBranchs: []
     }
   },
-  methods: {
-    confirmRelation() {
-      updateBranchGroupBranchs(this.relateModel.branchGroupId, this.relateModel.branchIdList).then(response => {
-        if(!response.data) {
-          this.$message.error('修改失败')
-        }else {
-          this.$message.success('修改成功')
-          this.relateBranchDialogVisible = false
-        }
-      })
-    }
-  },
   mounted() {
-    query({pageSize: 10000}).then(response => {
+    query({ pageSize: 10000 }).then(response => {
       this.allBranchs = response.data.list.map(b => {
         return {
           key: b.id,
@@ -87,7 +76,7 @@ export default {
       })
     })
   },
-  created(){
+  created() {
     this.columns = [
       {
         type: 'selection',
@@ -104,6 +93,18 @@ export default {
         label: '店组名称'
       }
     ]
+  },
+  methods: {
+    confirmRelation() {
+      updateBranchGroupBranchs(this.relateModel.branchGroupId, this.relateModel.branchIdList).then(response => {
+        if (!response.data) {
+          this.$message.error('修改失败')
+        } else {
+          this.$message.success('修改成功')
+          this.relateBranchDialogVisible = false
+        }
+      })
+    }
   }
 }
 </script>

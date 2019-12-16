@@ -3,7 +3,7 @@
     <list-page
       uri="archive/branch"
       dialog-title="机构"
-      :queryParams="queryParams"
+      :query-params="queryParams"
       :columns="columns"
       :model.sync="model"
     >
@@ -27,7 +27,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item prop="parentId" label="上级机构" :required="model.id != '00'">
-              <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :queryParams="parentBranchQueryParams" />
+              <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :query-params="parentBranchQueryParams" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -145,22 +145,17 @@ export default {
       branchTreeData: []
     }
   },
-  mounted() {
-    loadBranchTreeData().then(response => {
-      this.branchTreeData = response.data
-    })
-  },
-  methods: {
-    handleNodeClick(data) {
-      this.queryParams.parentId = data.id
-    }
-  },
   computed: {
     parentBranchQueryParams() {
       return {
         typeList: '0,1'
       }
     }
+  },
+  mounted() {
+    loadBranchTreeData().then(response => {
+      this.branchTreeData = response.data
+    })
   },
   created() {
     this.columns = [
@@ -206,6 +201,11 @@ export default {
         label: '地址'
       }
     ]
+  },
+  methods: {
+    handleNodeClick(data) {
+      this.queryParams.parentId = data.id
+    }
   }
 }
 </script>

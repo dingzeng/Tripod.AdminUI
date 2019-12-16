@@ -1,58 +1,58 @@
 <template>
   <div>
     <list-page
-      loadPage
+      load-page
       uri="/system/user"
-      dialogTitle="用户"
-      dialogWidth="500px"
+      dialog-title="用户"
+      dialog-width="500px"
       :columns="columns"
-      :modelRules="modelRules"
+      :model-rules="modelRules"
       :model.sync="model"
       :operations="operations"
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
-          <el-input v-model="queryParams.keyword" placeholder="用户名、手机号、姓名"></el-input>
+          <el-input v-model="queryParams.keyword" placeholder="用户名、手机号、姓名" />
         </el-form-item>
       </template>
       <template>
         <el-form-item prop="branchId" label="所属机构">
-          <ref-input type="branch" v-model="model.branchId" :label.sync="model.branchName"></ref-input>
+          <ref-input v-model="model.branchId" type="branch" :label.sync="model.branchName" />
         </el-form-item>
         <el-form-item prop="username" label="用户名">
-          <el-input v-model="model.username"></el-input>
+          <el-input v-model="model.username" />
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input v-model="model.password" type="password" show-password></el-input>
+          <el-input v-model="model.password" type="password" show-password />
         </el-form-item>
         <el-form-item prop="name" label="姓名">
-          <el-input v-model="model.name"></el-input>
+          <el-input v-model="model.name" />
         </el-form-item>
         <el-form-item prop="mobile" label="手机号">
-          <el-input v-model="model.mobile"></el-input>
+          <el-input v-model="model.mobile" />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-switch v-model="model.status" :active-value="1" :inactive-value="0"></el-switch>
+          <el-switch v-model="model.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </template>
     </list-page>
     <el-dialog title="关联角色" :visible.sync="relateRoleDialogVisible" width="650px" :close-on-click-modal="false">
-      <el-transfer v-model="relateModel.roleIdList" :data="allRoles" :titles="['未关联角色','关联角色']"></el-transfer>
+      <el-transfer v-model="relateModel.roleIdList" :data="allRoles" :titles="['未关联角色','关联角色']" />
       <template slot="footer">
-        <el-button @click="relateRoleDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirmRelation" size="small">确 定</el-button>
+        <el-button size="small" @click="relateRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmRelation">确 定</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import RefInput from "@/views/components/ref-input/index";
-import ListPage from "@/views/components/list-page/index";
+import RefInput from '@/views/components/ref-input/index'
+import ListPage from '@/views/components/list-page/index'
 import { getRoles } from '@/api/role'
 import { getUserRoles, updateUserRoles } from '@/api/user'
 export default {
-  name: "SystemUser",
+  name: 'SystemUser',
   components: { ListPage, RefInput },
   data() {
     return {
@@ -60,13 +60,13 @@ export default {
       columns: [],
       modelRules: {
         branchId: [
-          { required: true, message: "请选择用户所属机构", trigger: "blur" }
+          { required: true, message: '请选择用户所属机构', trigger: 'blur' }
         ],
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        name: [{ required: true, message: "请输入姓名", trigger: "blur" }]
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }]
       },
       model: {},
       operations: [
@@ -87,18 +87,6 @@ export default {
         roleIdList: []
       },
       allRoles: []
-    };
-  },
-  methods: {
-    confirmRelation() {
-      updateUserRoles(this.relateModel.userId, this.relateModel.roleIdList).then(response => {
-        if(!response.data) {
-          this.$message.error('修改失败')
-        }else {
-          this.$message.success('修改成功')
-          this.relateRoleDialogVisible = false
-        }
-      })
     }
   },
   mounted() {
@@ -114,33 +102,33 @@ export default {
   created() {
     this.columns = [
       {
-        type: "selection",
+        type: 'selection',
         width: 55
       },
       {
-        prop: "id",
-        label: "编码",
+        prop: 'id',
+        label: '编码',
         width: 100
       },
       {
-        prop: "username",
-        label: "用户名",
+        prop: 'username',
+        label: '用户名',
         width: 150
       },
       {
-        prop: "name",
-        label: "姓名",
+        prop: 'name',
+        label: '姓名',
         width: 150
       },
       {
-        prop: "mobile",
-        label: "手机号",
+        prop: 'mobile',
+        label: '手机号',
         width: 200
       },
       {
-        prop: "status",
-        type: "tag",
-        label: "状态",
+        prop: 'status',
+        type: 'tag',
+        label: '状态',
         tagTypes: {
           0: 'info',
           1: 'success'
@@ -150,7 +138,19 @@ export default {
           1: '启用'
         }
       }
-    ];
+    ]
+  },
+  methods: {
+    confirmRelation() {
+      updateUserRoles(this.relateModel.userId, this.relateModel.roleIdList).then(response => {
+        if (!response.data) {
+          this.$message.error('修改失败')
+        } else {
+          this.$message.success('修改成功')
+          this.relateRoleDialogVisible = false
+        }
+      })
+    }
   }
-};
+}
 </script>>
