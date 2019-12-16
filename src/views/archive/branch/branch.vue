@@ -1,7 +1,6 @@
 <template>
   <div>
     <list-page
-      ref="listpage"
       uri="archive/branch"
       dialog-title="机构"
       :queryParams="queryParams"

@@ -91,7 +91,8 @@ export default {
       confirmDialogVisible: false,
       innerModel: this.model,
       action: "", // add | view | edit
-      modelChanged: false
+      modelChanged: false,
+      innerPage: {}
     };
   },
   props: {
@@ -148,6 +149,14 @@ export default {
     loadPage: {
       type: Boolean,
       default: () => false
+    },
+    operations: {
+      type: Array,
+      default: () => []
+    },
+    page: {
+      type: Object,
+      default: () => {}
     }
   },
   methods: {
@@ -338,24 +347,26 @@ export default {
       }.bind(this);
     },
     listPageColumns() {
+      const buttons = [
+        {
+          icon: 'el-icon-edit',
+          onclick: (index, row) => {
+            this.handleEdit(index, row)
+          }
+        }, {
+          icon: 'el-icon-delete',
+          onclick: (index, row) => {
+            this.handleDelete(index, row)
+          }
+        }
+      ]
+      buttons.push(...this.operations)
       const cols = this.columns
       cols.push({
         type: 'opt',
         label: '操作',
         width: 150,
-        buttons: [
-          {
-            icon: 'el-icon-edit',
-            onclick: (index, row) => {
-              this.handleEdit(index, row)
-            }
-          }, {
-            icon: 'el-icon-delete',
-            onclick: (index, row) => {
-              this.handleDelete(index, row)
-            }
-          }
-        ]
+        buttons: buttons
       })
       return cols
     }
@@ -366,7 +377,7 @@ export default {
         url: this.uri + "/_page",
         method: "get"
       }).then(response => {
-        this.$emit("on-page-loaded", response.data);
+        this.innerPage = response.data
       });
     }
     this.query();
@@ -386,6 +397,18 @@ export default {
     queryParams: {
       handler: function(newValue) {
         this.query()
+      },
+      deep: true
+    },
+    innerPage: {
+      handler: function(newValue) {
+        this.$emit('update:page', newValue)
+      },
+      deep: true
+    },
+    page: {
+      handler: function(newValue) {
+        this.innerPage = newValue
       },
       deep: true
     }

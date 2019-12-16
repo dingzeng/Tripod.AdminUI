@@ -8,7 +8,7 @@
       :columns="columns"
       :modelRules="modelRules"
       :model.sync="model"
-      @on-page-loaded="pageLoaded"
+      :operations="operations"
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
@@ -32,26 +32,25 @@
           <el-input v-model="model.mobile"></el-input>
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-switch v-model="model.status"></el-switch>
-        </el-form-item>
-        <el-form-item prop="roles" label="角色">
-          <el-select multiple v-model="model.roles" placeholder="清选择">
-            <el-option
-              v-for="option in page.roles"
-              :key="option.id"
-              :label="option.name"
-              :value="option.id"
-            ></el-option>
-          </el-select>
+          <el-switch v-model="model.status" :active-value="1" :inactive-value="0"></el-switch>
         </el-form-item>
       </template>
     </list-page>
+    <el-dialog title="关联角色" :visible.sync="relateRoleDialogVisible" width="650px" :close-on-click-modal="false">
+      <el-transfer v-model="relateModel.roleIdList" :data="allRoles" :titles="['未关联角色','关联角色']"></el-transfer>
+      <template slot="footer">
+        <el-button @click="relateRoleDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="confirmRelation" size="small">确 定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import RefInput from "@/views/components/ref-input/index";
 import ListPage from "@/views/components/list-page/index";
+import { getRoles } from '@/api/role'
+import { getUserRoles, updateUserRoles } from '@/api/user'
 export default {
   name: "SystemUser",
   components: { ListPage, RefInput },
@@ -67,17 +66,50 @@ export default {
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        roles: [{ required: true, message: "请选择角色", trigger: "blur" }]
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }]
       },
       model: {},
-      page: {}
+      operations: [
+        {
+          icon: 'el-icon-link',
+          onclick: (index, row) => {
+            this.relateRoleDialogVisible = true
+            getUserRoles(row.id).then(response => {
+              this.relateModel.userId = row.id
+              this.relateModel.roleIdList = response.data.map(b => b.id)
+            })
+          }
+        }
+      ],
+      relateRoleDialogVisible: false,
+      relateModel: {
+        userId: '',
+        roleIdList: []
+      },
+      allRoles: []
     };
   },
   methods: {
-    pageLoaded(page) {
-      this.page = page;
+    confirmRelation() {
+      updateUserRoles(this.relateModel.userId, this.relateModel.roleIdList).then(response => {
+        if(!response.data) {
+          this.$message.error('修改失败')
+        }else {
+          this.$message.success('修改成功')
+          this.relateRoleDialogVisible = false
+        }
+      })
     }
+  },
+  mounted() {
+    getRoles().then(response => {
+      this.allRoles = response.data.map(b => {
+        return {
+          key: b.id,
+          label: b.name
+        }
+      })
+    })
   },
   created() {
     this.columns = [

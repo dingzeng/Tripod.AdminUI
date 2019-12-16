@@ -1,18 +1,9 @@
 import request from '@/utils/request'
 
 export function getRoles() {
-  return new Promise(function(resolve, reject){
-    return request({
-      url: '/system/role',
-      method: 'get'
-    }).then(response => {
-      resolve({
-        data: response.data.roles,
-        total: response.data.roles.length
-      })
-    }).catch(error => {
-      reject(error)
-    })
+  return request({
+    url: '/system/role',
+    method: 'get'
   })
 }
 

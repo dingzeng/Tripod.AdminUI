@@ -25,3 +25,21 @@ export function logout(token) {
     }
   })
 }
+
+export function getUserRoles(userId) {
+  return request({
+    url: '/system/user/role/' + userId,
+    method: 'get'
+  })
+}
+
+export function updateUserRoles(userId, roleIdList) {
+  return request({
+    url: '/system/user/role',
+    data: {
+      userId,
+      roleIdList
+    },
+    method: 'put'
+  })
+}

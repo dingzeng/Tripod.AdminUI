@@ -11,14 +11,16 @@
       @selection-change="handleSelectionChange"
       @row-dblclick="handleRowDbClick">
       <template v-for="col in columns">
-        <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop">
+        <el-table-column v-if="col.type=='opt'" label="操作" width="150" :key="col.prop" align="center">
           <template slot-scope="scope">
             <el-button 
               v-for="(btn, index) in col.buttons"
               size="mini"
+              type="text"
               :key="index"
               :icon="btn.icon"
               @click="btn.onclick(scope.$index, scope.row)">
+              {{btn.text}}
             </el-button>
           </template>
         </el-table-column>
