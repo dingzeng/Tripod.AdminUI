@@ -106,6 +106,12 @@ export const constantRoutes = [
         component: () => import('@/views/archive/branch/branch'),
         name: 'ArchiveBranch',
         meta: { title: '机构档案' }
+      },
+      {
+        path: 'supplierRegion',
+        component: () => import('@/views/archive/supplier/supplierRegion'),
+        name: 'ArchiveBranch',
+        meta: { title: '机构档案' }
       }
     ]
   },
