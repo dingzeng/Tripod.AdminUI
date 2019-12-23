@@ -9,13 +9,11 @@
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
-          <el-input v-model="queryParams.keyword" placeholder="机构编码/名称" />
+          <el-input v-model="queryParams.keyword" placeholder="编码/名称" />
         </el-form-item>
       </template>
       <template slot="mainLeft">
         <el-tree
-          ref="branchTree"
-          class="filter-tree"
           default-expand-all
           :expand-on-click-node="false"
           :data="branchTreeData"
