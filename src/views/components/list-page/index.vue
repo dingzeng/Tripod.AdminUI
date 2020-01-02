@@ -40,19 +40,24 @@
       :before-close="closeDialog"
       @closed="dialogClosed"
     >
-      <el-form
+      <x-form
         ref="modelForm"
         :model="innerModel"
         :rules="modelRules"
-        :disabled="action=='view'"
+        :readonly="action == 'view'"
         label-width="100px"
         size="small"
       >
         <slot />
-      </el-form>
+      </x-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="closeDialog">取 消</el-button>
-        <el-button type="primary" size="small" @click="doSave">确 定</el-button>
+        <template v-if="action == 'view'">
+          <el-button size="small" type="primary" @click="closeDialog">关 闭</el-button>
+        </template>
+        <template v-else>
+          <el-button size="small" @click="closeDialog">取 消</el-button>
+          <el-button type="primary" size="small" @click="doSave">确 定</el-button>
+        </template>
       </div>
     </el-dialog>
     <el-dialog
@@ -338,7 +343,7 @@ export default {
       this.action = 'view'
       this.dialogVisible = true
       this.getFn(row[this.pk]).then(response => {
-        if (response.code != 20000) {
+        if (response.code !== 20000) {
           this.$message.error(response.message)
           return
         }
@@ -352,7 +357,7 @@ export default {
       this.action = 'edit'
       this.dialogVisible = true
       this.getFn(row[this.pk]).then(response => {
-        if (response.code != 20000) {
+        if (response.code !== 20000) {
           this.$message.error(response.message)
           return
         }
@@ -365,7 +370,7 @@ export default {
     handleDelete(index, row) {
       this.$confirm('确定要删除吗？', '提示').then(() => {
         this.deleteFn(row[this.pk]).then(response => {
-          if (response.code != 20000) {
+          if (response.code !== 20000) {
             this.$message.error(response.message)
             return
           }
@@ -388,17 +393,17 @@ export default {
     doSave() {
       this.$refs.modelForm.validate(valid => {
         if (valid) {
-          if (this.action == 'view') {
+          if (this.action === 'view') {
             this.dialogVisible = false
             return
           }
           const promise =
-            this.action == 'add'
+            this.action === 'add'
               ? this.addFn(this.innerModel)
               : this.updateFn(this.innerModel)
 
           promise.then(response => {
-            if (response.code != 20000) {
+            if (response.code !== 20000) {
               this.$message.error(response.message)
               return
             }

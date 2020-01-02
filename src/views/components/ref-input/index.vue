@@ -1,21 +1,23 @@
 <template>
   <div>
-    <el-input 
-      v-model="innerLabel" 
+    <x-input
+      v-model="innerLabel"
       clearable
       readonly
       :placeholder="placeholder"
       :disabled="disabled"
       @blur="inputBlur"
-      @clear="inputClear">
+      @clear="inputClear"
+    >
       <el-button slot="append" icon="el-icon-menu" @click="clickMore"></el-button>
-    </el-input>
-    <component 
-      ref="dialog"
+    </x-input>
+    <component
       :is="listDialogComponentName"
+      ref="dialog"
       :visible.sync="dialogVisible"
-      :queryParams.sync="innerQueryParams"
-      @on-complete="dialogComplete">
+      :query-params.sync="innerQueryParams"
+      @on-complete="dialogComplete"
+    >
     </component>
   </div>
 </template>
@@ -25,7 +27,7 @@ import DynamicDialogComponentMixin from './mixins/dynamicDialogCompnentMixin'
 export default {
   name: 'RefInput',
   mixins: [DynamicDialogComponentMixin],
-  data () {
+  data() {
     return {
       innerValue: this.value,
       innerLabel: this.label,
@@ -35,8 +37,8 @@ export default {
   },
   props: {
     value: {
-      type: [String,Number],
-      default: () => ""
+      type: [String, Number],
+      default: () => ''
     },
     label: String,
     type: {
@@ -45,7 +47,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: () => "请选择"
+      default: () => '请选择'
     },
     disabled: {
       type: Boolean,
@@ -67,7 +69,7 @@ export default {
     inputClear() {
       this.innerValue = ''
     },
-    dialogComplete(value, label, selection){
+    dialogComplete(value, label, selection) {
       this.innerValue = value
       this.innerLabel = label
     },
@@ -86,10 +88,10 @@ export default {
     },
     value(newValue) {
       this.innerValue = newValue
-      
+
       // HACK fixbug:form组件的 resetFields方法对ref-input组件绑定的label属性不会重置
       // （只重置在form-item上写了prop的数据）
-      if(!newValue) {
+      if (!newValue) {
         this.innerLabel = ''
       }
     },

@@ -20,19 +20,19 @@
           <ref-input v-model="model.branchId" type="branch" :label.sync="model.branchName" />
         </el-form-item>
         <el-form-item prop="username" label="用户名">
-          <el-input v-model="model.username" />
+          <x-input v-model="model.username" />
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input v-model="model.password" type="password" show-password />
+          <x-input v-model="model.password" type="password" show-password />
         </el-form-item>
         <el-form-item prop="name" label="姓名">
-          <el-input v-model="model.name" />
+          <x-input v-model="model.name" />
         </el-form-item>
         <el-form-item prop="mobile" label="手机号">
-          <el-input v-model="model.mobile" />
+          <x-input v-model="model.mobile" />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-switch v-model="model.status" :active-value="1" :inactive-value="0" />
+          <x-switch v-model="model.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </template>
     </list-page>

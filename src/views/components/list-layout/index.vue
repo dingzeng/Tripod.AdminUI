@@ -24,16 +24,16 @@
 </template>
 
 <script>
-const prefix = "app-list-layout-";
+const prefix = 'app-list-layout-'
 export default {
-  name: "ListLayout",
+  name: 'ListLayout',
   data() {
     return {
       prefix: prefix
-    };
+    }
   },
   methods: {}
-};
+}
 </script>
 
 <style lang="scss" scoped>

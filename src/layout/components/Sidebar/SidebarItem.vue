@@ -13,7 +13,7 @@
       </template>
       <sidebar-item
         v-for="child in item.children"
-        :key="child.path"
+        :key="child.code"
         :is-nest="true"
         :item="child"
         class="nest-menu"

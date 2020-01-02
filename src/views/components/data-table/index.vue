@@ -62,7 +62,8 @@ export default {
       default: () => []
     },
     height: {
-      type: [String, Number]
+      type: [String, Number],
+      default: 400
     }
   },
   data() {

@@ -11,10 +11,10 @@
     >
       <template>
         <el-form-item prop="name" label="角色名称">
-          <el-input v-model="model.name" />
+          <x-input v-model="model.name" />
         </el-form-item>
         <el-form-item prop="memo" label="备注">
-          <el-input v-model="model.memo" />
+          <x-input v-model="model.memo" />
         </el-form-item>
       </template>
     </list-page>

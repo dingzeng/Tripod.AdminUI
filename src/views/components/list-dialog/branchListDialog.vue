@@ -2,11 +2,12 @@
   <div>
     <list-dialog
       :visible.sync="innerVisible"
-      :uri="uri" 
-      :columns="columns" 
-      :queryParams="innerQueryParams" 
-      dialogTitle="选择机构"
-      @on-complete="complete">
+      :uri="uri"
+      :columns="columns"
+      :query-params="innerQueryParams"
+      dialog-title="选择机构"
+      @on-complete="complete"
+    >
       <template slot="queryForm">
         <el-form-item>
           <el-input v-model="innerQueryParams.keyword" placeholder="机构编码、名称"></el-input>
@@ -28,7 +29,6 @@
 
 <script>
 import mixin from './mixin'
-import ListDialog from './listDialog'
 import { loadBranchTreeData } from '@/api/branch'
 import { branchType } from '@/utils/enum'
 export default {

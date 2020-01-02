@@ -20,7 +20,7 @@ export default {
   methods: {
     /**
      * 触发完成事件，默认取id、name的数据，需要自定义，则在组件中覆盖complete方法
-     * @param {列表对话框选择的数据数组} selection 
+     * @param {列表对话框选择的数据数组} selection
      */
     complete(selection) {
       const value = selection[0]['id']
