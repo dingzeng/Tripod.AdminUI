@@ -118,6 +118,30 @@ export const constantRoutes = [
         component: () => import('@/views/archive/supplier/supplier'),
         name: 'ArchiveSupplier',
         meta: { title: '供应商' }
+      },
+      {
+        path: 'itemCls',
+        component: () => import('@/views/archive/item/itemCls'),
+        name: 'ArchiveItemCls',
+        meta: { title: '商品类别' }
+      },
+      {
+        path: 'itemBrand',
+        component: () => import('@/views/archive/item/itemBrand'),
+        name: 'ArchiveItemBrand',
+        meta: { title: '商品品牌' }
+      },
+      {
+        path: 'itemDepartment',
+        component: () => import('@/views/archive/item/itemDepartment'),
+        name: 'ArchiveItemDepartment',
+        meta: { title: '商品部门' }
+      },
+      {
+        path: 'itemUnit',
+        component: () => import('@/views/archive/item/itemUnit'),
+        name: 'ArchiveItemUnit',
+        meta: { title: '商品单位' }
       }
     ]
   },

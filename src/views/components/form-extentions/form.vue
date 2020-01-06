@@ -31,6 +31,9 @@ export default {
   methods: {
     resetFields() {
       this.$refs.form.resetFields()
+    },
+    validate(callback) {
+      this.$refs.form.validate(callback)
     }
   },
   watch: {

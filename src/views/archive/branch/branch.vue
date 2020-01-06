@@ -21,103 +21,109 @@
         />
       </template>
       <template>
-        <el-divider content-position="left">基础信息</el-divider>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="parentId" label="上级机构" :required="model.id != '00'">
-              <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :query-params="parentBranchQueryParams" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="id" required label="机构编码">
-              <x-input v-model="model.id" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="type" required label="机构类型">
-              <x-select v-model="model.type">
-                <el-option
-                  v-for="(label,key) in branchType"
-                  :key="key"
-                  :value="Number(key)"
-                  :label="label"
-                />
-              </x-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="name" required label="机构名称">
-              <x-input v-model="model.name" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="shortName" required label="机构简称">
-              <x-input v-model="model.shortName" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-divider content-position="left">通讯信息</el-divider>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="contactsName" label="联系人">
-              <x-input v-model="model.contactsName" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="contactsMobile" label="手机号">
-              <x-input v-model="model.contactsMobile" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="contactsTel" label="电话号码">
-              <x-input v-model="model.contactsTel" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="contactsEmail" label="邮箱">
-              <x-input v-model="model.contactsEmail" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="address" label="地址">
-              <x-input v-model="model.address" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-divider content-position="left">维护信息</el-divider>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="createOperName" label="创建人">
-              <x-input v-model="model.createOperName" readonly />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="createTime" label="创建时间">
-              <x-input v-model="model.createTime" readonly />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="lastUpdateOperName" label="最后修改人">
-              <x-input v-model="model.lastUpdateOperName" readonly />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item prop="lastUpdateTime" label="最后修改时间">
-              <x-input v-model="model.lastUpdateTime" readonly />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item prop="memo" label="备注">
-              <x-input v-model="model.memo" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-card header="基础信息">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item prop="parentId" label="上级机构" :required="model.id != '00'">
+                <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :query-params="parentBranchQueryParams" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="id" required label="机构编码">
+                <x-input v-model="model.id" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="type" required label="机构类型">
+                <x-select v-model="model.type">
+                  <el-option
+                    v-for="(label,key) in branchType"
+                    :key="key"
+                    :value="Number(key)"
+                    :label="label"
+                  />
+                </x-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item prop="name" required label="机构名称">
+                <x-input v-model="model.name" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="shortName" required label="机构简称">
+                <x-input v-model="model.shortName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-card>
+
+        <el-card header="通讯信息" style="margin: 10px 0px;">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item prop="contactsName" label="联系人">
+                <x-input v-model="model.contactsName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="contactsMobile" label="手机号">
+                <x-input v-model="model.contactsMobile" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="contactsTel" label="电话号码">
+                <x-input v-model="model.contactsTel" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item prop="contactsEmail" label="邮箱">
+                <x-input v-model="model.contactsEmail" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="address" label="地址">
+                <x-input v-model="model.address" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-card>
+
+        <el-card header="维护信息">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item prop="createOperName" label="创建人">
+                <x-input v-model="model.createOperName" readonly />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="createTime" label="创建时间">
+                <x-input v-model="model.createTime" readonly />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="lastUpdateOperName" label="最后修改人">
+                <x-input v-model="model.lastUpdateOperName" readonly />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item prop="lastUpdateTime" label="最后修改时间">
+                <x-input v-model="model.lastUpdateTime" readonly />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item prop="memo" label="备注">
+                <x-input v-model="model.memo" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-card>
+
       </template>
     </list-page>
   </div>
