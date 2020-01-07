@@ -8,6 +8,7 @@
       :model-rules="modelRules"
       :model.sync="model"
       dialog-fullscreen
+      @model-load="modelLoad"
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
@@ -149,7 +150,8 @@ export default {
       model: { },
       modelRules: {},
       branchType,
-      branchTreeData: []
+      branchTreeData: [],
+      originalId: {}
     }
   },
   computed: {
@@ -162,6 +164,9 @@ export default {
   methods: {
     handleNodeClick(data) {
       this.queryParams.parentId = data.id
+    },
+    modelLoad(modelData) {
+      this.originalId = modelData.id
     }
   },
   mounted() {
@@ -170,6 +175,7 @@ export default {
     })
   },
   created() {
+    const vm = this
     this.columns = [
       {
         type: 'selection',
@@ -226,7 +232,7 @@ export default {
               url: '/archive/branch/id_exists/' + value,
               method: 'get'
             }).then(response => {
-              if (response.data) {
+              if (response.data && value !== vm.originalId) {
                 callback(new Error('编码已存在'))
               } else {
                 callback()

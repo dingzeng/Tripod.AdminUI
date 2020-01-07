@@ -1,24 +1,28 @@
 <template>
   <div>
-    <x-input
-      v-model="innerLabel"
-      clearable
-      readonly
-      :placeholder="placeholder"
-      :disabled="disabled"
-      @blur="inputBlur"
-      @clear="inputClear"
-    >
-      <el-button slot="append" icon="el-icon-menu" @click="clickMore"></el-button>
-    </x-input>
-    <component
-      :is="listDialogComponentName"
-      ref="dialog"
-      :visible.sync="dialogVisible"
-      :query-params.sync="innerQueryParams"
-      @on-ok="setCurrentData"
-    >
-    </component>
+    <template v-if="formStates.readonly">
+      {{ innerLabel }}
+    </template>
+    <template v-else>
+      <el-input
+        v-model="innerLabel"
+        clearable
+        :placeholder="placeholder"
+        :disabled="disabled"
+        @blur="inputBlur"
+        @clear="inputClear"
+      >
+        <el-button slot="append" icon="el-icon-menu" @click="clickMore"></el-button>
+      </el-input>
+      <component
+        :is="listDialogComponentName"
+        ref="dialog"
+        :visible.sync="dialogVisible"
+        :query-params.sync="innerQueryParams"
+        @on-ok="setCurrentData"
+      >
+      </component>
+    </template>
   </div>
 </template>
 
@@ -27,6 +31,7 @@ import warpper from './mixins/warpper'
 import emitter from 'element-ui/src/mixins/emitter'
 export default {
   name: 'RefInput',
+  inject: ['formStates'],
   mixins: [warpper, emitter],
   data() {
     return {
@@ -77,6 +82,7 @@ export default {
     },
     inputClear() {
       this.innerValue = ''
+      this.innerLabel = ''
     },
     setCurrentData(data) {
       // NOTE 使用ListDialog的ref-input只支持单选

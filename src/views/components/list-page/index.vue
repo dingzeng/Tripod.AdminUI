@@ -277,7 +277,6 @@ export default {
       deep: true
     },
     model(newValue) {
-      console.log('watch model:', newValue)
       this.innerModel = newValue
     },
     innerPage: {
@@ -359,6 +358,7 @@ export default {
         this.$nextTick(() => {
           this.modelChanged = false
         })
+        this.$emit('model-load', response.data)
       })
     },
     handleDelete(index, row) {
