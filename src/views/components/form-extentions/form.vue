@@ -34,6 +34,9 @@ export default {
     },
     validate(callback) {
       this.$refs.form.validate(callback)
+    },
+    clearValidate(props) {
+      this.$refs.form.clearValidate(props)
     }
   },
   watch: {

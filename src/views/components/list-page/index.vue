@@ -280,12 +280,6 @@ export default {
       console.log('watch model:', newValue)
       this.innerModel = newValue
     },
-    queryParams: {
-      handler: function(newValue) {
-        this.query()
-      },
-      deep: true
-    },
     innerPage: {
       handler: function(newValue) {
         this.$emit('update:page', newValue)

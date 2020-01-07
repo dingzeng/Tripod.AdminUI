@@ -5,6 +5,33 @@
 - ref-input失去焦点后不会触发验证
 - list-dialog只有点击查询时才调用接口
 
+## Form Validate
+
+> [https://github.com/yiminghe/async-validator](https://github.com/yiminghe/async-validator)
+
+常用验证规则：
+- type
+  - string
+  - number、integer、float
+  - boolean
+  - array
+  - object
+  - enum
+  - date
+  - url
+  - email
+- required
+- pattern
+- min、max
+- len
+- enum
+- whitespace ?
+- fields
+- transform
+- message
+- asyncValidator: Function(rule, value, callback)
+- validator: Function(rule, value, callback)
+
 ## 模块&菜单
 
 - 基础档案

@@ -6,7 +6,6 @@
       :columns="columns"
       :query-params="innerQueryParams"
       dialog-title="选择机构"
-      @on-complete="complete"
     >
       <template slot="queryForm">
         <el-form-item>

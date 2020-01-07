@@ -16,7 +16,7 @@
       ref="dialog"
       :visible.sync="dialogVisible"
       :query-params.sync="innerQueryParams"
-      @on-complete="dialogComplete"
+      @on-ok="ok"
     >
     </component>
   </div>
@@ -60,6 +60,14 @@ export default {
     queryParams: {
       type: Object,
       default: () => {}
+    },
+    valueKey: {
+      type: String,
+      default: 'id'
+    },
+    labelKey: {
+      type: String,
+      default: 'name'
     }
   },
   methods: {
@@ -69,9 +77,10 @@ export default {
     inputClear() {
       this.innerValue = ''
     },
-    dialogComplete(value, label, selection) {
-      this.innerValue = value
-      this.innerLabel = label
+    ok(data) {
+      // NOTE 使用ListDialog的ref-input只支持单选
+      this.innerValue = data[this.valueKey]
+      this.innerLabel = data[this.labelKey]
     },
     clickMore() {
       this.dialogVisible = true

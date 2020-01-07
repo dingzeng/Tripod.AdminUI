@@ -4,7 +4,11 @@
       {{ $attrs.value }}
     </template>
     <template v-else>
-      <el-input v-bind="$attrs" @input="input"></el-input>
+      <el-input v-bind="$attrs" @input="input">
+        <template slot="append">
+          <slot name="append"></slot>
+        </template>
+      </el-input>
     </template>
   </div>
 </template>

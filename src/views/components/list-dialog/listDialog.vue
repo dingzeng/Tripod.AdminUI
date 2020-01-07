@@ -118,11 +118,11 @@ export default {
         this.$message.warning('未选中任何行')
         return
       }
-      this.$emit('on-complete', this.selection)
+      this.$emit('on-ok', this.selection)
       this.innerVisible = false
     },
     rowDblclick(row, column, event) {
-      this.$emit('on-complete', [row])
+      this.$parent.$emit('on-ok', row)
       this.innerVisible = false
     }
   },

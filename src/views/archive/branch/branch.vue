@@ -5,7 +5,9 @@
       dialog-title="机构"
       :query-params="queryParams"
       :columns="columns"
+      :model-rules="modelRules"
       :model.sync="model"
+      dialog-fullscreen
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
@@ -24,12 +26,12 @@
         <el-card header="基础信息">
           <el-row>
             <el-col :span="8">
-              <el-form-item prop="parentId" label="上级机构" :required="model.id != '00'">
+              <el-form-item prop="parentId" label="上级机构">
                 <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :query-params="parentBranchQueryParams" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item prop="id" required label="机构编码">
+              <el-form-item prop="id" label="机构编码">
                 <x-input v-model="model.id" />
               </el-form-item>
             </el-col>
@@ -130,6 +132,7 @@
 </template>
 
 <script>
+import request from '@/utils/request'
 import ListPage from '@/views/components/list-page/index'
 import RefInput from '@/views/components/ref-input/index'
 import { branchType } from '@/utils/enum'
@@ -144,7 +147,29 @@ export default {
       },
       columns: [],
       model: { },
-      modelRules: [],
+      modelRules: {
+        parentId: [
+          { required: true, message: '上级机构必填', trigger: 'blur' }
+        ],
+        id: [
+          { required: true, message: '机构编码必填', trigger: 'blur' },
+          { type: 'string', pattern: /^[0-9]{2}$/, message: '机构编码只能输入两位数字字符', trigger: 'blur' },
+          {
+            validator(rule, value, callback) {
+              request({
+                url: '/archive/branch/id_exists/' + value,
+                method: 'get'
+              }).then(response => {
+                if (response.data) {
+                  callback(new Error('编码已存在'))
+                } else {
+                  callback()
+                }
+              })
+            }
+          }
+        ]
+      },
       branchType,
       branchTreeData: []
     }
