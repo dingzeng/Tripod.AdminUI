@@ -246,11 +246,11 @@ export default {
       ],
       name: [
         { required: true, message: '机构名称必填', trigger: 'blur' },
-        { type: 'string', len: 20, message: '长度不能操作20个字符', trigger: 'blur' }
+        { type: 'string', max: 20, message: '长度不能操作20个字符', trigger: 'blur' }
       ],
       shortName: [
         { required: true, message: '机构简称必填', trigger: 'blur' },
-        { type: 'string', len: 10, message: '长度不能操作10个字符', trigger: 'blur' }
+        { type: 'string', max: 10, message: '长度不能操作10个字符', trigger: 'blur' }
       ],
       contactsEmail: [
         { type: 'email', message: '邮箱格式错误', trigger: 'blur' }
