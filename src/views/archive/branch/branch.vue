@@ -36,7 +36,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item prop="type" required label="机构类型">
+              <el-form-item prop="type" label="机构类型">
                 <x-select v-model="model.type">
                   <el-option
                     v-for="(label,key) in branchType"
@@ -50,7 +50,7 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item prop="name" required label="机构名称">
+              <el-form-item prop="name" label="机构名称">
                 <x-input v-model="model.name" />
               </el-form-item>
             </el-col>
@@ -147,29 +147,7 @@ export default {
       },
       columns: [],
       model: { },
-      modelRules: {
-        parentId: [
-          { required: true, message: '上级机构必填', trigger: 'blur' }
-        ],
-        id: [
-          { required: true, message: '机构编码必填', trigger: 'blur' },
-          { type: 'string', pattern: /^[0-9]{2}$/, message: '机构编码只能输入两位数字字符', trigger: 'blur' },
-          {
-            validator(rule, value, callback) {
-              request({
-                url: '/archive/branch/id_exists/' + value,
-                method: 'get'
-              }).then(response => {
-                if (response.data) {
-                  callback(new Error('编码已存在'))
-                } else {
-                  callback()
-                }
-              })
-            }
-          }
-        ]
-      },
+      modelRules: {},
       branchType,
       branchTreeData: []
     }
@@ -179,6 +157,11 @@ export default {
       return {
         typeList: '0,1'
       }
+    }
+  },
+  methods: {
+    handleNodeClick(data) {
+      this.queryParams.parentId = data.id
     }
   },
   mounted() {
@@ -230,10 +213,42 @@ export default {
         label: '地址'
       }
     ]
-  },
-  methods: {
-    handleNodeClick(data) {
-      this.queryParams.parentId = data.id
+    this.modelRules = {
+      parentId: [
+        { required: true, message: '上级机构必填', trigger: 'blur' }
+      ],
+      id: [
+        { required: true, message: '机构编码必填', trigger: 'blur' },
+        { type: 'string', pattern: /^[0-9]{2}$/, message: '机构编码只能输入两位数字字符', trigger: 'blur' },
+        {
+          validator(rule, value, callback) {
+            request({
+              url: '/archive/branch/id_exists/' + value,
+              method: 'get'
+            }).then(response => {
+              if (response.data) {
+                callback(new Error('编码已存在'))
+              } else {
+                callback()
+              }
+            })
+          }
+        }
+      ],
+      type: [
+        { required: true, message: '机构类型必填' }
+      ],
+      name: [
+        { required: true, message: '机构名称必填', trigger: 'blur' },
+        { type: 'string', len: 20, message: '长度不能操作20个字符', trigger: 'blur' }
+      ],
+      shortName: [
+        { required: true, message: '机构简称必填', trigger: 'blur' },
+        { type: 'string', len: 10, message: '长度不能操作10个字符', trigger: 'blur' }
+      ],
+      contactsEmail: [
+        { type: 'email', message: '邮箱格式错误', trigger: 'blur' }
+      ]
     }
   }
 }

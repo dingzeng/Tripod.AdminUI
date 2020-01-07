@@ -16,17 +16,18 @@
       ref="dialog"
       :visible.sync="dialogVisible"
       :query-params.sync="innerQueryParams"
-      @on-ok="ok"
+      @on-ok="setCurrentData"
     >
     </component>
   </div>
 </template>
 
 <script>
-import DynamicDialogComponentMixin from './mixins/dynamicDialogCompnentMixin'
+import warpper from './mixins/warpper'
+import emitter from 'element-ui/src/mixins/emitter'
 export default {
   name: 'RefInput',
-  mixins: [DynamicDialogComponentMixin],
+  mixins: [warpper, emitter],
   data() {
     return {
       innerValue: this.value,
@@ -77,10 +78,13 @@ export default {
     inputClear() {
       this.innerValue = ''
     },
-    ok(data) {
+    setCurrentData(data) {
       // NOTE 使用ListDialog的ref-input只支持单选
       this.innerValue = data[this.valueKey]
       this.innerLabel = data[this.labelKey]
+      this.$nextTick(() => {
+        this.dispatch('ElFormItem', 'el.form.blur', [data[this.valueKey]])
+      })
     },
     clickMore() {
       this.dialogVisible = true
