@@ -11,6 +11,7 @@
       @selection-change="handleSelectionChange"
       @row-dblclick="handleRowDbClick"
     >
+      <el-table-column v-if="selection" type="selection" width="39"></el-table-column>
       <template v-for="col in columns">
         <el-table-column v-if="col.type=='opt'" :key="col.prop" label="操作" width="150" align="center">
           <template slot-scope="scope">
@@ -62,8 +63,11 @@ export default {
       default: () => []
     },
     height: {
-      type: [String, Number],
-      default: 400
+      type: [String, Number]
+    },
+    selection: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

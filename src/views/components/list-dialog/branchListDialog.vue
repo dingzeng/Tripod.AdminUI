@@ -1,6 +1,7 @@
 <template>
   <div>
     <list-dialog
+      ref="list"
       :visible.sync="innerVisible"
       :uri="uri"
       :columns="columns"
@@ -48,6 +49,7 @@ export default {
   methods: {
     handleNodeClick(data) {
       this.innerQueryParams.parentId = data.id
+      this.$refs.list.query()
     }
   },
   mounted() {
@@ -57,10 +59,6 @@ export default {
   },
   created() {
     this.columns = [
-      {
-        type: 'selection',
-        width: 55
-      },
       {
         prop: 'id',
         label: '机构编码',

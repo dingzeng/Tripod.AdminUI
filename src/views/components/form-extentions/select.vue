@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-select v-show="!formStates.readonly" ref="select" v-bind="$attrs" @input="input">
+    <el-select v-show="!formStates.readonly" ref="select" v-bind="$attrs" style="width: 100%;" @input="input">
       <slot />
     </el-select>
     <span v-show="formStates.readonly">

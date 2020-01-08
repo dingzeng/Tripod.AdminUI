@@ -79,11 +79,6 @@ export default {
   created() {
     this.columns = [
       {
-        type: 'selection',
-        width: 55,
-        align: 'center'
-      },
-      {
         prop: 'id',
         label: '编码',
         width: 100

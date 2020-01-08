@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="form" v-bind="$attrs">
+    <el-form ref="form" v-bind="$attrs" :validate-on-rule-change="false">
       <slot />
     </el-form>
   </div>

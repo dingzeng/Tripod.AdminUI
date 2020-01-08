@@ -124,17 +124,16 @@ export default {
     ]
     this.columns = [
       {
-        type: 'selection',
-        width: 55
-      }, {
         prop: 'id',
         label: '编码',
         width: 100
-      }, {
+      },
+      {
         prop: 'name',
         label: '名称',
         width: 100
-      }, {
+      },
+      {
         prop: 'memo',
         label: '备注'
       }

@@ -12,10 +12,12 @@
         </template>
         <template>
           <el-row>
-            <el-col :span="4">
-              <slot name="mainLeft"></slot>
+            <el-col :span="leftSpan">
+              <el-card shadow="never" style="height: 400px;margin-right: 10px;overflow: auto;">
+                <slot name="mainLeft"></slot>
+              </el-card>
             </el-col>
-            <el-col :span="$slots.mainLeft ? 20 : 24">
+            <el-col :span="24- leftSpan">
               <data-table
                 :data="data"
                 :columns="columns"
@@ -89,6 +91,10 @@ export default {
     dialogWidth: {
       type: String,
       default: '50%'
+    },
+    leftSpan: {
+      type: Number,
+      default: 6
     }
   },
   methods: {
@@ -118,7 +124,7 @@ export default {
         this.$message.warning('未选中任何行')
         return
       }
-      this.$emit('on-ok', this.selection)
+      this.$parent.$emit('on-ok', this.selection)
       this.innerVisible = false
     },
     rowDblclick(row, column, event) {
@@ -148,12 +154,6 @@ export default {
     },
     innerVisible(newValue) {
       this.$emit('update:visible', newValue)
-    },
-    queryParams: {
-      handler: function(newValue) {
-        this.query()
-      },
-      deep: true
     }
   }
 }

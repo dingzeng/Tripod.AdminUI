@@ -45,10 +45,12 @@
         :model="innerModel"
         :rules="modelRules"
         :readonly="action == 'view'"
-        label-width="100px"
+        :label-suffix="action == 'view' ? ':' : ''"
+        label-width="110px"
         size="small"
       >
         <slot />
+        <data-maintain v-if="showDataMaintain && action != 'add'" :value="innerModel"></data-maintain>
       </x-form>
       <div slot="footer" class="dialog-footer">
         <template v-if="action == 'view'">
@@ -80,12 +82,13 @@
 <script>
 import qs from 'qs'
 import request from '@/utils/request'
+import DataMaintain from '@/views/components/list-page/data-maintain'
 import ListLayout from '@/views/components/list-layout/index'
 import Pagination from '@/components/Pagination/index'
 import DataTable from '@/views/components/data-table/index'
 export default {
   name: 'ListPage',
-  components: { ListLayout, Pagination, DataTable },
+  components: { DataMaintain, ListLayout, Pagination, DataTable },
   props: {
     uri: {
       type: String,
@@ -148,6 +151,10 @@ export default {
     page: {
       type: Object,
       default: () => {}
+    },
+    showDataMaintain: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -369,6 +376,7 @@ export default {
             return
           }
           this.$message.success('删除成功')
+          this.$emit('on-delete')
           this.query()
         })
       })
@@ -402,6 +410,7 @@ export default {
               return
             }
             this.$message.success('保存成功')
+            this.$emit('on-save')
             this.query()
             this.dialogVisible = false
           })

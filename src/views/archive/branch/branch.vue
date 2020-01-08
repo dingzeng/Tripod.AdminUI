@@ -1,14 +1,17 @@
 <template>
   <div>
     <list-page
+      ref="listpage"
       uri="archive/branch"
       dialog-title="机构"
+      show-data-maintain
       :query-params="queryParams"
       :columns="columns"
       :model-rules="modelRules"
       :model.sync="model"
-      dialog-fullscreen
       @model-load="modelLoad"
+      @on-save="refreshTree"
+      @on-delete="refreshTree"
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
@@ -24,109 +27,78 @@
         />
       </template>
       <template>
-        <el-card header="基础信息">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="parentId" label="上级机构">
-                <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :query-params="parentBranchQueryParams" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="id" label="机构编码">
-                <x-input v-model="model.id" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="type" label="机构类型">
-                <x-select v-model="model.type">
-                  <el-option
-                    v-for="(label,key) in branchType"
-                    :key="key"
-                    :value="Number(key)"
-                    :label="label"
-                  />
-                </x-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="name" label="机构名称">
-                <x-input v-model="model.name" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="shortName" required label="机构简称">
-                <x-input v-model="model.shortName" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-card>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item prop="parentId" label="上级机构">
+              <ref-input v-model="model.parentId" type="branch" :label.sync="model.parentName" :query-params="parentBranchQueryParams" :disabled="model.type == 0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="id" label="机构编码">
+              <x-input v-model="model.id" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="type" label="机构类型">
+              <x-select v-model="model.type">
+                <el-option
+                  v-for="(label,key) in branchType"
+                  :key="key"
+                  :value="Number(key)"
+                  :label="label"
+                  :disabled="branchTypeDisabled(key)"
+                />
+              </x-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item prop="name" label="机构名称">
+              <x-input v-model="model.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="shortName" required label="机构简称">
+              <x-input v-model="model.shortName" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        <el-card header="通讯信息" style="margin: 10px 0px;">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="contactsName" label="联系人">
-                <x-input v-model="model.contactsName" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="contactsMobile" label="手机号">
-                <x-input v-model="model.contactsMobile" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="contactsTel" label="电话号码">
-                <x-input v-model="model.contactsTel" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="contactsEmail" label="邮箱">
-                <x-input v-model="model.contactsEmail" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="address" label="地址">
-                <x-input v-model="model.address" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-card>
-
-        <el-card header="维护信息">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="createOperName" label="创建人">
-                <x-input v-model="model.createOperName" readonly />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="createTime" label="创建时间">
-                <x-input v-model="model.createTime" readonly />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="lastUpdateOperName" label="最后修改人">
-                <x-input v-model="model.lastUpdateOperName" readonly />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item prop="lastUpdateTime" label="最后修改时间">
-                <x-input v-model="model.lastUpdateTime" readonly />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item prop="memo" label="备注">
-                <x-input v-model="model.memo" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-card>
-
+        <el-row>
+          <el-col :span="8">
+            <el-form-item prop="contactsName" label="联系人">
+              <x-input v-model="model.contactsName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="contactsMobile" label="手机号">
+              <x-input v-model="model.contactsMobile" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="contactsTel" label="电话号码">
+              <x-input v-model="model.contactsTel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item prop="contactsEmail" label="邮箱">
+              <x-input v-model="model.contactsEmail" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="address" label="地址">
+              <x-input v-model="model.address" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item prop="memo" label="备注">
+              <x-input v-model="model.memo" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </template>
     </list-page>
   </div>
@@ -148,7 +120,6 @@ export default {
       },
       columns: [],
       model: { },
-      modelRules: {},
       branchType,
       branchTreeData: [],
       originalId: {}
@@ -159,29 +130,70 @@ export default {
       return {
         typeList: '0,1'
       }
+    },
+    modelRules() {
+      const vm = this
+      return {
+        parentId: [
+          { required: vm.model.type !== 0, message: '上级机构必填', trigger: 'blur' }
+        ],
+        id: [
+          { required: true, message: '机构编码必填', trigger: 'blur' },
+          { type: 'string', pattern: /^[0-9]{2}$/, message: '机构编码只能输入两位数字字符', trigger: 'blur' },
+          {
+            validator(rule, value, callback) {
+              request({
+                url: '/archive/branch/id_exists/' + value,
+                method: 'get'
+              }).then(response => {
+                if (response.data && value !== vm.originalId) {
+                  callback(new Error('编码已存在'))
+                } else {
+                  callback()
+                }
+              })
+            }
+          }
+        ],
+        type: [
+          { required: true, message: '机构类型必填' }
+        ],
+        name: [
+          { required: true, message: '机构名称必填', trigger: 'blur' },
+          { type: 'string', max: 20, message: '长度不能操作20个字符', trigger: 'blur' }
+        ],
+        shortName: [
+          { required: true, message: '机构简称必填', trigger: 'blur' },
+          { type: 'string', max: 10, message: '长度不能操作10个字符', trigger: 'blur' }
+        ],
+        contactsEmail: [
+          { type: 'email', message: '邮箱格式错误', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
     handleNodeClick(data) {
       this.queryParams.parentId = data.id
+      this.$refs.listpage.query()
     },
     modelLoad(modelData) {
       this.originalId = modelData.id
+    },
+    refreshTree() {
+      loadBranchTreeData().then(response => {
+        this.branchTreeData = response.data
+      })
+    },
+    branchTypeDisabled(key) {
+      return key === 0
     }
   },
   mounted() {
-    loadBranchTreeData().then(response => {
-      this.branchTreeData = response.data
-    })
+    this.refreshTree()
   },
   created() {
-    const vm = this
     this.columns = [
-      {
-        type: 'selection',
-        width: 55,
-        align: 'center'
-      },
       {
         prop: 'id',
         label: '编码',
@@ -219,43 +231,6 @@ export default {
         label: '地址'
       }
     ]
-    this.modelRules = {
-      parentId: [
-        { required: true, message: '上级机构必填', trigger: 'blur' }
-      ],
-      id: [
-        { required: true, message: '机构编码必填', trigger: 'blur' },
-        { type: 'string', pattern: /^[0-9]{2}$/, message: '机构编码只能输入两位数字字符', trigger: 'blur' },
-        {
-          validator(rule, value, callback) {
-            request({
-              url: '/archive/branch/id_exists/' + value,
-              method: 'get'
-            }).then(response => {
-              if (response.data && value !== vm.originalId) {
-                callback(new Error('编码已存在'))
-              } else {
-                callback()
-              }
-            })
-          }
-        }
-      ],
-      type: [
-        { required: true, message: '机构类型必填' }
-      ],
-      name: [
-        { required: true, message: '机构名称必填', trigger: 'blur' },
-        { type: 'string', max: 20, message: '长度不能操作20个字符', trigger: 'blur' }
-      ],
-      shortName: [
-        { required: true, message: '机构简称必填', trigger: 'blur' },
-        { type: 'string', max: 10, message: '长度不能操作10个字符', trigger: 'blur' }
-      ],
-      contactsEmail: [
-        { type: 'email', message: '邮箱格式错误', trigger: 'blur' }
-      ]
-    }
   }
 }
 </script>

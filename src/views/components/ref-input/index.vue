@@ -86,6 +86,9 @@ export default {
     },
     setCurrentData(data) {
       // NOTE 使用ListDialog的ref-input只支持单选
+      if (Array.isArray(data)) {
+        data = data[0]
+      }
       this.innerValue = data[this.valueKey]
       this.innerLabel = data[this.labelKey]
       this.$nextTick(() => {
