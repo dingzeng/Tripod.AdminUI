@@ -1,3 +1,9 @@
+<style>
+  .el-dialog__body {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+</style>
 <template>
   <div>
     <list-layout>
@@ -14,10 +20,12 @@
       </template>
       <template>
         <el-row>
-          <el-col :span="4">
-            <slot name="mainLeft" />
+          <el-col :span="leftSpan">
+            <el-card shadow="never" style="margin-right: 10px;">
+              <slot name="mainLeft"></slot>
+            </el-card>
           </el-col>
-          <el-col :span="$slots.mainLeft ? 20 : 24">
+          <el-col :span="24- leftSpan">
             <data-table
               :data="data"
               :columns="listPageColumns"
@@ -44,16 +52,16 @@
         ref="modelForm"
         :model="innerModel"
         :rules="modelRules"
-        :readonly="action == 'view'"
-        :label-suffix="action == 'view' ? ':' : ''"
+        :readonly="innerAction == 'view'"
+        :label-suffix="innerAction == 'view' ? ':' : ''"
         label-width="110px"
         size="small"
       >
         <slot />
-        <data-maintain v-if="showDataMaintain && action != 'add'" :value="innerModel"></data-maintain>
+        <data-maintain v-if="showDataMaintain && innerAction != 'add'" :value="innerModel"></data-maintain>
       </x-form>
       <div slot="footer" class="dialog-footer">
-        <template v-if="action == 'view'">
+        <template v-if="innerAction == 'view'">
           <el-button size="small" type="primary" @click="closeDialog">关 闭</el-button>
         </template>
         <template v-else>
@@ -155,6 +163,13 @@ export default {
     showDataMaintain: {
       type: Boolean,
       default: false
+    },
+    action: {
+      type: String
+    },
+    leftSpan: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -166,7 +181,7 @@ export default {
       dialogVisible: false,
       confirmDialogVisible: false,
       innerModel: this.model,
-      action: '', // add | view | edit
+      innerAction: this.action, // add | view | edit
       modelChanged: false,
       innerPage: {}
     }
@@ -174,7 +189,7 @@ export default {
   computed: {
     title() {
       let actionText = ''
-      switch (this.action) {
+      switch (this.innerAction) {
         case 'view':
           actionText = '查看'
           break
@@ -297,6 +312,12 @@ export default {
         this.innerPage = newValue
       },
       deep: true
+    },
+    innerAction(value) {
+      this.$emit('update:action', value)
+    },
+    action(value) {
+      this.innerAction = value
     }
   },
   mounted() {
@@ -330,7 +351,7 @@ export default {
       })
     },
     handleAdd() {
-      this.action = 'add'
+      this.innerAction = 'add'
       this.dialogVisible = true
       this.initFn().then(response => {
         this.innerModel = Object.assign({}, this.model, response.data)
@@ -340,7 +361,7 @@ export default {
       })
     },
     handleView(row, column, event) {
-      this.action = 'view'
+      this.innerAction = 'view'
       this.dialogVisible = true
       this.getFn(row[this.pk]).then(response => {
         if (response.code !== 20000) {
@@ -354,7 +375,7 @@ export default {
       })
     },
     handleEdit(index, row) {
-      this.action = 'edit'
+      this.innerAction = 'edit'
       this.dialogVisible = true
       this.getFn(row[this.pk]).then(response => {
         if (response.code !== 20000) {
@@ -395,12 +416,12 @@ export default {
     doSave() {
       this.$refs.modelForm.validate(valid => {
         if (valid) {
-          if (this.action === 'view') {
+          if (this.innerAction === 'view') {
             this.dialogVisible = false
             return
           }
           const promise =
-            this.action === 'add'
+            this.innerAction === 'add'
               ? this.addFn(this.innerModel)
               : this.updateFn(this.innerModel)
 

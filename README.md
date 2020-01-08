@@ -32,6 +32,13 @@
 - asyncValidator: Function(rule, value, callback)
 - validator: Function(rule, value, callback)
 
+## Features
+- Print
+- Column Setting
+- Import & Export
+- Custom Data Filter
+- Custom Sort
+
 ## 模块&菜单
 
 - 基础档案

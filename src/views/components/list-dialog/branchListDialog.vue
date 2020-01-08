@@ -6,6 +6,7 @@
       :uri="uri"
       :columns="columns"
       :query-params="innerQueryParams"
+      :left-span="6"
       dialog-title="选择机构"
     >
       <template slot="queryForm">

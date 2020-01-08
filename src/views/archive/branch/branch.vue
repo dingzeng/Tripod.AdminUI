@@ -9,7 +9,8 @@
       :columns="columns"
       :model-rules="modelRules"
       :model.sync="model"
-      @model-load="modelLoad"
+      :action.sync="action"
+      :left-span="4"
       @on-save="refreshTree"
       @on-delete="refreshTree"
     >
@@ -27,6 +28,7 @@
         />
       </template>
       <template>
+        <el-divider></el-divider>
         <el-row>
           <el-col :span="8">
             <el-form-item prop="parentId" label="上级机构">
@@ -35,7 +37,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item prop="id" label="机构编码">
-              <x-input v-model="model.id" />
+              <x-input v-model="model.id" :disabled="action != 'add'" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -122,7 +124,7 @@ export default {
       model: { },
       branchType,
       branchTreeData: [],
-      originalId: {}
+      action: ''
     }
   },
   computed: {
@@ -138,20 +140,24 @@ export default {
           { required: vm.model.type !== 0, message: '上级机构必填', trigger: 'blur' }
         ],
         id: [
-          { required: true, message: '机构编码必填', trigger: 'blur' },
-          { type: 'string', pattern: /^[0-9]{2}$/, message: '机构编码只能输入两位数字字符', trigger: 'blur' },
+          { required: true, message: '编码必填', trigger: 'blur' },
+          { type: 'string', pattern: /^[0-9]{2}$/, message: '编码只能输入两位数字字符', trigger: 'blur' },
           {
             validator(rule, value, callback) {
-              request({
-                url: '/archive/branch/id_exists/' + value,
-                method: 'get'
-              }).then(response => {
-                if (response.data && value !== vm.originalId) {
-                  callback(new Error('编码已存在'))
-                } else {
-                  callback()
-                }
-              })
+              if (vm.action === 'add') {
+                request({
+                  url: '/archive/branch/id_exists/' + value,
+                  method: 'get'
+                }).then(response => {
+                  if (response.data) {
+                    callback(new Error('编码已存在'))
+                  } else {
+                    callback()
+                  }
+                })
+              } else {
+                callback()
+              }
             }
           }
         ],
@@ -176,9 +182,6 @@ export default {
     handleNodeClick(data) {
       this.queryParams.parentId = data.id
       this.$refs.listpage.query()
-    },
-    modelLoad(modelData) {
-      this.originalId = modelData.id
     },
     refreshTree() {
       loadBranchTreeData().then(response => {

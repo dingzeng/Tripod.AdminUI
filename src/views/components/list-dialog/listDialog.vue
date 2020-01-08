@@ -94,7 +94,7 @@ export default {
     },
     leftSpan: {
       type: Number,
-      default: 6
+      default: 0
     }
   },
   methods: {
