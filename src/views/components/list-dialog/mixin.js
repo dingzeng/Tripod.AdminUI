@@ -1,17 +1,12 @@
-import ListDialog from './listDialog'
+import ListDialog from './base'
 export default {
   components: { ListDialog },
   data() {
     return {
-      innerVisible: this.visible,
       innerQueryParams: this.queryParams
     }
   },
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
     queryParams: {
       type: Object,
       default: () => {}
@@ -21,12 +16,6 @@ export default {
 
   },
   watch: {
-    visible(newValue) {
-      this.innerVisible = newValue
-    },
-    innerVisible(newValue) {
-      this.$emit('update:visible', newValue)
-    },
     queryParams: {
       handler: function(newValue) {
         this.innerQueryParams = newValue

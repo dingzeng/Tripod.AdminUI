@@ -1,43 +1,38 @@
 <template>
   <div>
-    <template v-if="formStates.readonly">
-      {{ innerLabel }}
-    </template>
-    <template v-else>
-      <el-input
-        v-model="innerLabel"
-        clearable
-        :placeholder="placeholder"
-        :disabled="disabled"
-        @blur="inputBlur"
-        @clear="inputClear"
-      >
-        <el-button slot="append" icon="el-icon-menu" @click="clickMore"></el-button>
-      </el-input>
-      <component
-        :is="listDialogComponentName"
-        ref="dialog"
-        :visible.sync="dialogVisible"
-        :query-params.sync="innerQueryParams"
-        @on-ok="setCurrentData"
-      >
-      </component>
-    </template>
+    <el-input
+      v-model="innerLabel"
+      clearable
+      :placeholder="placeholder"
+      :disabled="disabled"
+      @blur="inputBlur"
+      @clear="inputClear"
+    >
+      <el-button slot="append" icon="el-icon-menu" @click="clickMore"></el-button>
+    </el-input>
+    <component
+      :is="type"
+      ref="dialog"
+      :query-params.sync="innerQueryParams"
+      @on-ok="setCurrentData"
+    >
+    </component>
   </div>
 </template>
 
 <script>
-import warpper from './mixins/warpper'
+import ListDialogs from '@/views/components/list-dialog'
 import emitter from 'element-ui/src/mixins/emitter'
 export default {
   name: 'RefInput',
-  inject: ['formStates'],
-  mixins: [warpper, emitter],
+  mixins: [emitter],
+  components: {
+    ...ListDialogs
+  },
   data() {
     return {
       innerValue: this.value,
       innerLabel: this.label,
-      dialogVisible: false,
       innerQueryParams: this.queryParams
     }
   },
@@ -56,10 +51,6 @@ export default {
       default: () => '请选择'
     },
     disabled: {
-      type: Boolean,
-      default: () => false
-    },
-    readonly: {
       type: Boolean,
       default: () => false
     },
@@ -96,12 +87,7 @@ export default {
       })
     },
     clickMore() {
-      this.dialogVisible = true
-    }
-  },
-  computed: {
-    listDialogComponentName() {
-      return `${this.type}ListDialog`
+      this.$refs.dialog.$refs.list.show()
     }
   },
   watch: {

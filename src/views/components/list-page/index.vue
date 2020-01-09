@@ -29,7 +29,7 @@
             <data-table
               :data="data"
               :columns="listPageColumns"
-              @row-dblclick="handleView"
+              @row-dblclick="handleEdit"
             />
           </el-col>
         </el-row>
@@ -48,26 +48,19 @@
       :before-close="closeDialog"
       @closed="dialogClosed"
     >
-      <x-form
+      <el-form
         ref="modelForm"
         :model="innerModel"
         :rules="modelRules"
-        :readonly="innerAction == 'view'"
-        :label-suffix="innerAction == 'view' ? ':' : ''"
         label-width="110px"
         size="small"
       >
         <slot />
         <data-maintain v-if="showDataMaintain && innerAction != 'add'" :value="innerModel"></data-maintain>
-      </x-form>
+      </el-form>
       <div slot="footer" class="dialog-footer">
-        <template v-if="innerAction == 'view'">
-          <el-button size="small" type="primary" @click="closeDialog">关 闭</el-button>
-        </template>
-        <template v-else>
-          <el-button size="small" @click="closeDialog">取 消</el-button>
-          <el-button type="primary" size="small" @click="doSave">确 定</el-button>
-        </template>
+        <el-button size="small" @click="closeDialog">取 消</el-button>
+        <el-button type="primary" size="small" @click="doSave">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -181,7 +174,7 @@ export default {
       dialogVisible: false,
       confirmDialogVisible: false,
       innerModel: this.model,
-      innerAction: this.action, // add | view | edit
+      innerAction: this.action, // add | edit
       modelChanged: false,
       innerPage: {}
     }
@@ -190,9 +183,6 @@ export default {
     title() {
       let actionText = ''
       switch (this.innerAction) {
-        case 'view':
-          actionText = '查看'
-          break
         case 'add':
           actionText = '新增'
           break
@@ -268,11 +258,6 @@ export default {
     listPageColumns() {
       const buttons = [
         {
-          icon: 'el-icon-edit',
-          onclick: (index, row) => {
-            this.handleEdit(index, row)
-          }
-        }, {
           icon: 'el-icon-delete',
           onclick: (index, row) => {
             this.handleDelete(index, row)
@@ -360,21 +345,7 @@ export default {
         })
       })
     },
-    handleView(row, column, event) {
-      this.innerAction = 'view'
-      this.dialogVisible = true
-      this.getFn(row[this.pk]).then(response => {
-        if (response.code !== 20000) {
-          this.$message.error(response.message)
-          return
-        }
-        this.innerModel = response.data
-        this.$nextTick(() => {
-          this.modelChanged = false
-        })
-      })
-    },
-    handleEdit(index, row) {
+    handleEdit(row, column, event) {
       this.innerAction = 'edit'
       this.dialogVisible = true
       this.getFn(row[this.pk]).then(response => {

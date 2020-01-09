@@ -16,7 +16,7 @@
       </template>
       <template>
         <el-form-item prop="name" label="店组名称">
-          <x-input v-model="model.name" />
+          <el-input v-model="model.name" />
         </el-form-item>
       </template>
     </list-page>

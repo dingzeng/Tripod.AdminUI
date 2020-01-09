@@ -30,11 +30,6 @@ export default {
   created() {
     this.columns = [
       {
-        prop: 'id',
-        label: '编码',
-        width: 100
-      },
-      {
         prop: 'name',
         label: '名称'
       }

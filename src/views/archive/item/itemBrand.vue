@@ -15,12 +15,12 @@
         <el-row>
           <el-col>
             <el-form-item label="编码" required>
-              <x-input v-model="model.id"></x-input>
+              <el-input v-model="model.id"></el-input>
             </el-form-item>
           </el-col>
           <el-col>
             <el-form-item label="名称" required>
-              <x-input v-model="model.name"></x-input>
+              <el-input v-model="model.name"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

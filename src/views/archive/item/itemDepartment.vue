@@ -15,7 +15,7 @@
         <el-row>
           <el-col>
             <el-form-item label="名称" required>
-              <x-input v-model="model.name"></x-input>
+              <el-input v-model="model.name"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

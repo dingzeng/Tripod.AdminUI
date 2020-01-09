@@ -9,9 +9,6 @@ import './styles/element-variables.scss'
 
 import '@/styles/index.scss' // global css
 
-import XForm from './views/components/form-extentions'
-Vue.use(XForm)
-
 import App from './App'
 import store from './store'
 import router from './router'

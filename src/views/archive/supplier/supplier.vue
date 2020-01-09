@@ -8,6 +8,7 @@
       :model.sync="model"
       :left-span="4"
       show-data-maintain
+      @model-load="modelLoad"
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
@@ -31,46 +32,49 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="name" label="名称" required>
+            <el-form-item prop="name" label="名称">
               <el-input v-model="model.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item prop="regionId" label="区域" required>
-              <!-- TODO region -->
+            <el-form-item prop="regionId" label="区域">
+              <ref-input v-model="model.regionId" type="supplierRegion" :label.sync="model.regionName"></ref-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item prop="sellWay" label="经营方式" required>
-              <el-select>
-                <el-option v-for="way in sellWays" :key="way" :value="way">{{ way }}</el-option>
+              <el-select v-model="model.sellWay">
+                <el-option
+                  v-for="(label,key) in sellWay"
+                  :key="key"
+                  :value="Number(key)"
+                  :label="label"
+                />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="状态">
-              {{ model.status }}
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item prop="settleWay" label="结算方式" required>
-              <el-select>
-                <el-option v-for="way in settleWays" :key="way" :value="way">{{ way }}</el-option>
+              <el-select v-model="model.settleWay">
+                <el-option
+                  v-for="(label,key) in settleWay"
+                  :key="key"
+                  :value="Number(key)"
+                  :label="label"
+                />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col v-if="model.settleWay == 2" :span="8">
             <el-form-item prop="settleDays" label="结算周期天数">
-              <el-input v-model="model.settleDays"></el-input>
+              <el-input-number v-model="model.settleDays"></el-input-number>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col v-if="model.settleWay == 3" :span="8">
             <el-form-item prop="settleDate" label="结算日期">
-              <el-input v-model="model.settleDate"></el-input>
+              <el-input-number v-model="model.settleDate"></el-input-number>
             </el-form-item>
           </el-col>
         </el-row>
@@ -138,26 +142,36 @@
 </template>
 
 <script>
-import { sellWays } from '@/api/branch'
+import { sellWay, settleWay } from '@/utils/enum'
+import request from '@/utils/request'
 import ListPage from '@/views/components/list-page/index'
+import RefInput from '@/views/components/ref-input/index'
 import { loadSupplierRegionTreeData } from '@/api/supplier'
 export default {
   name: 'Supplier',
-  components: { ListPage },
+  components: { ListPage, RefInput },
   data: () => {
     return {
       queryParams: {
         regionId: ''
       },
       columns: [],
-      model: {},
-      modelRules: {},
-      supplierRegionTreeData: []
+      model: {
+        sellWay: 0,
+        settleWay: 0
+      },
+      supplierRegionTreeData: [],
+      originalId: '',
+      sellWay: sellWay,
+      settleWay: settleWay
     }
   },
   methods: {
     handleNodeClick(data) {
       this.queryParams.regionId = data.id
+    },
+    modelLoad(model) {
+      this.originalId = model.id
     }
   },
   mounted() {
@@ -182,7 +196,7 @@ export default {
         label: '经营方式',
         type: 'enum',
         width: 100,
-        enums: sellWays
+        enums: sellWay
       },
       {
         prop: 'status',
@@ -209,26 +223,54 @@ export default {
         label: '备注'
       }
     ]
-
-    this.modelRules = {
-      id: [
-        { required: true, message: '编码必填', trigger: 'blur' },
-        { type: 'string', pattern: /^[0-9]{3}$/, message: '编码只能输入三位数字字符', trigger: 'blur' },
-        {
-          validator(rule, value, callback) {
-            // request({
-            //   url: '/archive/supplier/id_exists/' + value,
-            //   method: 'get'
-            // }).then(response => {
-            //   if (response.data) {
-            //     callback(new Error('编码已存在'))
-            //   } else {
-            //     callback()
-            //   }
-            // })
+  },
+  computed: {
+    modelRules() {
+      const vm = this
+      return {
+        id: [
+          { required: true, message: '编码必填', trigger: 'blur' },
+          { type: 'string', pattern: /^[0-9]{3}$/, message: '编码只能输入三位数字字符', trigger: 'blur' },
+          {
+            validator(rule, value, callback) {
+              request({
+                url: '/archive/supplier/id_exists/' + value,
+                method: 'get'
+              }).then(response => {
+                if (response.data && vm.originalId !== value) {
+                  callback(new Error('编码已存在'))
+                } else {
+                  callback()
+                }
+              })
+            }
           }
-        }
-      ]
+        ],
+        name: [
+          { required: true, message: '名称不存在', trigger: 'blur' },
+          { type: 'string', max: 20, message: '长度不能超过20位字符' }
+        ],
+        regionId: [
+          { required: true, message: '区域不能为空', trigger: 'blur' }
+        ],
+        sellWay: [
+          { required: true, message: '经营方式不能为空', trigger: 'blur' }
+        ],
+        settleWay: [
+          { required: true, message: '结算方式不能为空', trigger: 'blur' }
+        ],
+        settleDays: [
+          { required: vm.model.settleWay === 2, message: '结算周期天数必填', trigger: 'blur' },
+          { type: 'integer', min: 1 }
+        ],
+        settleDate: [
+          { required: vm.model.settleWay === 3, message: '结算日期必填', trigger: 'blur' },
+          { type: 'integer', min: 1, max: 28 }
+        ],
+        contactsEmail: [
+          { type: 'email', trigger: 'blur' }
+        ]
+      }
     }
   }
 }

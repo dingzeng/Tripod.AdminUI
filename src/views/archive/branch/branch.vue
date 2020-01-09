@@ -37,12 +37,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item prop="id" label="机构编码">
-              <x-input v-model="model.id" :disabled="action != 'add'" />
+              <el-input v-model="model.id" :disabled="action != 'add'" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item prop="type" label="机构类型">
-              <x-select v-model="model.type">
+              <el-select v-model="model.type">
                 <el-option
                   v-for="(label,key) in branchType"
                   :key="key"
@@ -50,19 +50,19 @@
                   :label="label"
                   :disabled="branchTypeDisabled(key)"
                 />
-              </x-select>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item prop="name" label="机构名称">
-              <x-input v-model="model.name" />
+              <el-input v-model="model.name" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item prop="shortName" required label="机构简称">
-              <x-input v-model="model.shortName" />
+              <el-input v-model="model.shortName" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -70,34 +70,34 @@
         <el-row>
           <el-col :span="8">
             <el-form-item prop="contactsName" label="联系人">
-              <x-input v-model="model.contactsName" />
+              <el-input v-model="model.contactsName" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item prop="contactsMobile" label="手机号">
-              <x-input v-model="model.contactsMobile" />
+              <el-input v-model="model.contactsMobile" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item prop="contactsTel" label="电话号码">
-              <x-input v-model="model.contactsTel" />
+              <el-input v-model="model.contactsTel" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item prop="contactsEmail" label="邮箱">
-              <x-input v-model="model.contactsEmail" />
+              <el-input v-model="model.contactsEmail" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item prop="address" label="地址">
-              <x-input v-model="model.address" />
+              <el-input v-model="model.address" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item prop="memo" label="备注">
-              <x-input v-model="model.memo" />
+              <el-input v-model="model.memo" />
             </el-form-item>
           </el-col>
         </el-row>
