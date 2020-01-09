@@ -5,16 +5,12 @@
       dialog-title="商品部门"
       :columns="columns"
       :model.sync="model"
+      :model-rules="modelRules"
     >
-      <template slot="queryForm">
-        <el-form-item prop="keyword">
-          <el-input v-model="queryParams.keyword" placeholder="编码/名称" />
-        </el-form-item>
-      </template>
       <template>
         <el-row>
           <el-col>
-            <el-form-item label="名称" required>
+            <el-form-item prop="name" label="名称">
               <el-input v-model="model.name"></el-input>
             </el-form-item>
           </el-col>
@@ -31,18 +27,17 @@ export default {
   components: { ListPage },
   data() {
     return {
-      queryParams: {},
       columns: [],
-      model: {}
+      model: {},
+      modelRules: {
+        name: [
+          { required: true, message: '必填', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
     this.columns = [
-      {
-        prop: 'id',
-        label: '编码',
-        width: 100
-      },
       {
         prop: 'name',
         label: '名称'

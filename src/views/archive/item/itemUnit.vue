@@ -5,6 +5,8 @@
       dialog-title="商品单位"
       :columns="columns"
       :model.sync="model"
+      :model-rules="modelRules"
+      :query-params.sync="queryParams"
     >
       <template slot="queryForm">
         <el-form-item prop="keyword">
@@ -33,16 +35,16 @@ export default {
     return {
       queryParams: {},
       columns: [],
-      model: {}
+      model: {},
+      modelRules: {
+        name: [
+          { required: true, message: '必填', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
     this.columns = [
-      {
-        prop: 'id',
-        label: '编码',
-        width: 100
-      },
       {
         prop: 'name',
         label: '名称'
