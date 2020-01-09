@@ -146,7 +146,7 @@ export default {
             validator(rule, value, callback) {
               if (vm.action === 'add') {
                 request({
-                  url: '/archive/branch/id_exists/' + value,
+                  url: '/archive/branch/exists/?id=' + value,
                   method: 'get'
                 }).then(response => {
                   if (response.data) {

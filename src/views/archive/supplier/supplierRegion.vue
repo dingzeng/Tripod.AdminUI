@@ -6,9 +6,10 @@
       :columns="columns"
       :is-paging="false"
       :model.sync="model"
+      :model-rules="modelRules"
     >
       <template>
-        <el-form-item prop="name" label="区域名称" required>
+        <el-form-item prop="name" label="区域名称">
           <el-input v-model="model.name"></el-input>
         </el-form-item>
       </template>
@@ -25,6 +26,16 @@ export default {
     return {
       columns: [],
       model: {}
+
+    }
+  },
+  computed: {
+    modelRules() {
+      return {
+        name: [
+          { required: true, message: '必填', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {

@@ -52,6 +52,7 @@
         ref="modelForm"
         :model="innerModel"
         :rules="modelRules"
+        :validate-on-rule-change="false"
         label-width="110px"
         size="small"
       >

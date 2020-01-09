@@ -1,8 +1,10 @@
 <template>
   <div>
     <list-page
+      ref="listpage"
       uri="/archive/supplier"
       dialog-title="供应商"
+      :query-params="queryParams"
       :columns="columns"
       :model-rules="modelRules"
       :model.sync="model"
@@ -169,6 +171,7 @@ export default {
   methods: {
     handleNodeClick(data) {
       this.queryParams.regionId = data.id
+      this.$refs.listpage.query()
     },
     modelLoad(model) {
       this.originalId = model.id
@@ -199,9 +202,24 @@ export default {
         enums: sellWay
       },
       {
+        prop: 'settleWay',
+        label: '结算方式',
+        type: 'enum',
+        width: 100,
+        enums: settleWay
+      },
+      {
         prop: 'status',
+        type: 'tag',
         label: '状态',
-        width: 100
+        tagTypes: {
+          0: 'info',
+          1: 'success'
+        },
+        tagLabels: {
+          0: '禁用',
+          1: '启用'
+        }
       },
       {
         prop: 'contactsName',
@@ -234,7 +252,7 @@ export default {
           {
             validator(rule, value, callback) {
               request({
-                url: '/archive/supplier/id_exists/' + value,
+                url: '/archive/supplier/exists/?id=' + value,
                 method: 'get'
               }).then(response => {
                 if (response.data && vm.originalId !== value) {
