@@ -21,3 +21,10 @@ export const settleWay = {
   2: '指定账期',
   3: '指定日期'
 }
+
+export const transportMode = {
+  0: '统配',
+  1: '直配',
+  2: '自采',
+  3: '越库'
+}

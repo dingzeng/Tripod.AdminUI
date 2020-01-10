@@ -142,6 +142,12 @@ export const constantRoutes = [
         component: () => import('@/views/archive/item/itemUnit'),
         name: 'ArchiveItemUnit',
         meta: { title: '商品单位' }
+      },
+      {
+        path: 'item',
+        component: () => import('@/views/archive/item/item'),
+        name: 'ArchiveItem',
+        meta: { title: '商品' }
       }
     ]
   },

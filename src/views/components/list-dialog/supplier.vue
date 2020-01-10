@@ -19,7 +19,7 @@
           class="filter-tree"
           default-expand-all
           :expand-on-click-node="false"
-          :data="branchTreeData"
+          :data="treeData"
           @node-click="handleNodeClick"
         />
       </template>

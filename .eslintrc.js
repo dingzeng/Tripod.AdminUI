@@ -21,6 +21,8 @@ module.exports = {
         "allowFirstLine": false
       }
     }],
+    "vue/attributes-order": "off",
+    "vue/attribute-hyphenation": "off",
     "vue/require-default-prop": "off",
     "vue/singleline-html-element-content-newline": "off",
     "vue/multiline-html-element-content-newline":"off",

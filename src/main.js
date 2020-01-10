@@ -17,6 +17,12 @@ import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
 
+import ListPage from '@/views/components/list-page/'
+import RefInput from '@/views/components/ref-input'
+
+Vue.component('ListPage', ListPage)
+Vue.component('RefInput', RefInput)
+
 import * as filters from './filters' // global filters
 
 Vue.use(Element, {

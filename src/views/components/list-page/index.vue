@@ -118,6 +118,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    model: {
+      type: Object,
+      default: () => {}
+    },
     modelRules: {
       type: Object,
       default: () => {}
@@ -137,10 +141,6 @@ export default {
     dialogFullscreen: {
       type: Boolean,
       default: false
-    },
-    model: {
-      type: Object,
-      default: () => {}
     },
     loadPage: {
       type: Boolean,
