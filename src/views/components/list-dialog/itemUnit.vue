@@ -5,7 +5,6 @@
       :uri="uri"
       :columns="columns"
       :query-params="innerQueryParams"
-      :is-paging="false"
       dialog-title="选择商品单位"
     >
     </list-dialog>
@@ -28,6 +27,7 @@ export default {
     this.columns = [
       {
         prop: 'id',
+        width: 100,
         label: '编码'
       },
       {

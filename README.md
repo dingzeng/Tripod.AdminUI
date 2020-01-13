@@ -39,6 +39,13 @@
 - Custom Data Filter
 - Custom Sort
 
+## Edit Table
+- Column Setting
+- Repeat Check
+- Import
+- Cell Validate & Row Validate
+
+
 ## 模块&菜单
 
 - 基础档案
